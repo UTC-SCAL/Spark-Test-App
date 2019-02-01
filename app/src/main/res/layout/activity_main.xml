@@ -22,7 +22,6 @@
     </android.support.design.widget.AppBarLayout>
 
     <Button
-        android:clickable="true"
         android:id="@+id/start_test"
         android:textSize="20sp"
         android:textStyle="bold"
