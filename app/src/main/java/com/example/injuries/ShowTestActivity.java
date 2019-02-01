@@ -1,5 +1,6 @@
 package com.example.injuries;
 
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Build;
 import android.os.Bundle;
@@ -31,6 +32,10 @@ public class ShowTestActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_show_test);
         setTimerSettings();
+        binding.seeResults.setOnClickListener(view -> {
+            remaining_tests = 5;
+            show_test_sample();
+        });
 
 
     }
@@ -69,6 +74,11 @@ public class ShowTestActivity extends AppCompatActivity {
                 new Handler().postDelayed(() -> {
                     if(remaining_tests != 0){
                         show_test_sample();
+                    }
+                    else{
+                        binding.testArea.setVisibility(View.GONE);
+                        binding.seeResults.setVisibility(View.VISIBLE);
+
                     }
                 }, waiting_time);
 

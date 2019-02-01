@@ -42,6 +42,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
+        <Button
+
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/test_area"
+            android:visibility="gone"
+            android:id="@+id/see_results"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:text="@string/perform_the_test_again"
+            android:textColor="@android:color/white"
+            android:background="@color/colorPrimary"
+            android:layout_margin="20dp"
+            android:layout_centerVertical="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
 
     </RelativeLayout>
 </layout>

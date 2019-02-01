@@ -28,9 +28,35 @@
         android:text="@string/start_test"
         android:textColor="@android:color/white"
         android:background="@color/colorPrimary"
-        android:layout_margin="20dp"
+        android:layout_margin="8dp"
         android:layout_centerVertical="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
+        <Button
+            android:layout_below="@+id/start_test"
+            android:id="@+id/guidelines"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:text="@string/test_guidelines"
+            android:textColor="@android:color/white"
+            android:background="@color/colorPrimary"
+            android:layout_margin="8dp"
+            android:layout_centerVertical="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:layout_below="@+id/guidelines"
+            android:id="@+id/device_calibration"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:text="@string/device_calibration"
+            android:textColor="@android:color/white"
+            android:background="@color/colorPrimary"
+            android:layout_margin="8dp"
+            android:layout_centerVertical="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 </RelativeLayout>
 </layout>
