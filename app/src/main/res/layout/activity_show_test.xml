@@ -43,11 +43,10 @@
             android:layout_height="wrap_content" />
 
         <Button
-
             android:layout_centerHorizontal="true"
             android:layout_below="@id/test_area"
             android:visibility="gone"
-            android:id="@+id/see_results"
+            android:id="@+id/perform_test_again"
             android:textSize="20sp"
             android:textStyle="bold"
             android:text="@string/perform_the_test_again"

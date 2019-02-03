@@ -32,7 +32,8 @@ public class ShowTestActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_show_test);
         setTimerSettings();
-        binding.seeResults.setOnClickListener(view -> {
+        binding.performTestAgain.setOnClickListener(view -> {
+            binding.performTestAgain.setVisibility(View.GONE);
             remaining_tests = 5;
             show_test_sample();
         });
@@ -57,13 +58,13 @@ public class ShowTestActivity extends AppCompatActivity {
     }
 
     private void show_test_sample(){
+        binding.testArea.setVisibility(View.VISIBLE);
         int sample_number = (int) Math.ceil(Math.random() * arrow_combinations.length);
         binding.testArea.setText(arrow_combinations[sample_number % arrow_combinations.length]);
         new CountDownTimer(2000, 100){
 
             @Override
             public void onTick(long millisUntilFinished) {
-
             }
 
             @Override
@@ -77,7 +78,7 @@ public class ShowTestActivity extends AppCompatActivity {
                     }
                     else{
                         binding.testArea.setVisibility(View.GONE);
-                        binding.seeResults.setVisibility(View.VISIBLE);
+                        binding.performTestAgain.setVisibility(View.VISIBLE);
 
                     }
                 }, waiting_time);
