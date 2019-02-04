@@ -16,53 +16,19 @@ import android.view.View;
 
 import com.example.injuries.databinding.ActivityDeviceCaliberationBinding;
 
-public class DeviceCaliberation extends AppCompatActivity implements SensorEventListener {
+public class DeviceCaliberation extends MotionSensorActivity{
 
     private ActivityDeviceCaliberationBinding binding;
-    public static final int SAMPLING_PERIOD_US = 1000000;
-    private SensorManager mSensorManager;
-    private Sensor mRotationVectorSensor;
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        startSensors();
-    }
-
-    private void startSensors() {
-        mSensorManager.registerListener(this, mRotationVectorSensor, SAMPLING_PERIOD_US);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        mSensorManager.unregisterListener(this);
-
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_device_caliberation);
-        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        mRotationVectorSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
+        binding.toolbar.setTitle(R.string.frank_test);
     }
 
     @Override
-    public void onSensorChanged(SensorEvent event) {
-        if (event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR) {
-            float cos_theta = event.values[3];
-            double x = event.values[0];
-            double y = event.values[1];
-            double z = event.values[2] ;
-            Log.i("rotation_vector_sensor", "(" + x + "," + y + ", " + z + ", " + cos_theta  + ")");
-        }
-
+    protected void onRotationChanged(double x, double y, double z, double angle) {
+        Log.i("rotation_vector_sensor", "(" + x + "," + y + ", " + z + ", " + angle  + ")");
     }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
-    }
-
 }

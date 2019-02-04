@@ -9,4 +9,6 @@
     <string name="test_guidelines">Test Guidelines</string>
     <string name="device_calibration">Device Calibration</string>
     <string name="title_activity_device_caliberation">DeviceCaliberation</string>
+    <string name="title_activity_reporting_result">ReportingResult</string>
+    <string name="frank_test">Franker Test</string>
 </resources>
