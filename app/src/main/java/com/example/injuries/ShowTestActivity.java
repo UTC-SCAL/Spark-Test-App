@@ -14,17 +14,16 @@ import android.view.View;
 import com.example.injuries.databinding.ActivityShowTestBinding;
 import com.example.injuries.pojos.TestSample;
 
-import org.xml.sax.helpers.LocatorImpl;
-
 public class ShowTestActivity extends MotionSensorActivity{
     public static final int MAX_TESTS_NUMBER = 5;
+    private static final double CUM_MAX = 4.0;
     ActivityShowTestBinding binding;
 
 
     private int remaining_tests = MAX_TESTS_NUMBER;
     private boolean within_test_period = false;
     private double previous_angle;
-    private double increment_sum = 0;
+    private double cum_diff = 0;
     private long sample_starting_time = 0;
     private TestSample[] testSamples = new TestSample[5];
 
@@ -137,24 +136,24 @@ public class ShowTestActivity extends MotionSensorActivity{
     @Override
     protected void onRotationChanged(double x, double y, double z, double angle) {
         if(!within_test_period){
-            increment_sum = 0;
+            cum_diff = 0;
             previous_angle = angle;
         }
         else{
             double angle_change = angle - previous_angle;
-            increment_sum += angle_change;
+            cum_diff += angle_change;
             Log.i("testing_activity", "" + angle_change + "," + angle);
-            if((increment_sum > 0 && angle > MAX_ANGLE) ||
-                    (increment_sum < 0 && angle < MIN_ANGLE)){
+            if((cum_diff > CUM_MAX && angle > MAX_ANGLE) ||
+                    (cum_diff < - CUM_MAX && angle < MIN_ANGLE)){
                 vibrate();
                 long response_time = sample_starting_time - System.currentTimeMillis();
                 int testSampleIndex = remaining_tests-1;
                 Log.i("vibration_bug", testSampleIndex + "");
                 testSamples[testSampleIndex].setResponse_time(response_time);
-                boolean testResult = isLeft[testSampleIndex] && (increment_sum < 0);
+                boolean testResult = isLeft[testSampleIndex] && (cum_diff < 0);
                 testSamples[testSampleIndex].setResultCorrect(testResult);
                 previous_angle = angle;
-                increment_sum = 0;
+                cum_diff = 0;
             }
         }
     }
