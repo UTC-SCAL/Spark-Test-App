@@ -1,5 +1,7 @@
 package com.example.injuries.pojos;
 
+import android.util.Log;
+
 public class TestSample {
     private long response_time; //time in msec
     private boolean isResultCorrect = false;
@@ -23,5 +25,9 @@ public class TestSample {
 
     public void setResultCorrect(boolean resultCorrect) {
         isResultCorrect = resultCorrect;
+    }
+
+    public void showInfo() {
+        Log.i("test_sample", "(time, res) = (" + response_time + ", " + isResultCorrect + ")");
     }
 }

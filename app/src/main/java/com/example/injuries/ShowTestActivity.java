@@ -117,6 +117,9 @@ public class ShowTestActivity extends MotionSensorActivity{
                     else{
                         binding.testArea.setVisibility(View.GONE);
                         binding.performTestAgain.setVisibility(View.VISIBLE);
+                        for(TestSample testSample: testSamples){
+                            testSample.showInfo();
+                        }
 
                     }
                 }, waiting_time);
@@ -146,11 +149,12 @@ public class ShowTestActivity extends MotionSensorActivity{
             if((cum_diff > CUM_MAX && angle > MAX_ANGLE) ||
                     (cum_diff < - CUM_MAX && angle < MIN_ANGLE)){
                 vibrate();
-                long response_time = sample_starting_time - System.currentTimeMillis();
+                long response_time = System.currentTimeMillis() - sample_starting_time;
                 int testSampleIndex = remaining_tests-1;
                 Log.i("vibration_bug", testSampleIndex + "");
                 testSamples[testSampleIndex].setResponse_time(response_time);
-                boolean testResult = isLeft[testSampleIndex] && (cum_diff < 0);
+                boolean testResult = (isLeft[testSampleIndex] && (cum_diff < - CUM_MAX)) ||
+                        !isLeft[testSampleIndex] && (cum_diff > CUM_MAX);
                 testSamples[testSampleIndex].setResultCorrect(testResult);
                 previous_angle = angle;
                 cum_diff = 0;
