@@ -1,18 +1,14 @@
 package com.example.injuries;
 
-import android.content.Context;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
-import android.os.VibrationEffect;
-import android.os.Vibrator;
 import android.util.Log;
 import android.view.View;
 
 import com.example.injuries.databinding.ActivityShowTestBinding;
-import com.example.injuries.pojos.TestSample;
 import com.example.injuries.pojos.TestSamplesContainer;
 
 import java.util.ArrayList;
@@ -118,12 +114,7 @@ public class ShowTestActivity extends MotionSensorActivity{
                         show_test_sample();
                     }
                     else{
-                        binding.testArea.setVisibility(View.GONE);
-                        binding.performTestAgain.setVisibility(View.VISIBLE);
-                        for(TestSample testSample: testSamplesContainer){
-                            testSample.showInfo();
-                        }
-
+                        startActivity(new Intent(ShowTestActivity.this, ReportingResultActivity.class));
                     }
                 }, waiting_time);
 

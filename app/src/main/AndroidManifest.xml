@@ -12,7 +12,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ReportingResult"
+            android:screenOrientation="landscape"
+            android:name=".ReportingResultActivity"
             android:label="@string/title_activity_reporting_result"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity

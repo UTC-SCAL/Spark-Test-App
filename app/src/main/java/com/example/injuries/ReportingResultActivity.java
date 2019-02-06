@@ -10,7 +10,7 @@ import android.view.View;
 
 import com.example.injuries.databinding.ActivityReportingResultBinding;
 
-public class ReportingResult extends AppCompatActivity {
+public class ReportingResultActivity extends AppCompatActivity {
 
     ActivityReportingResultBinding binding;
     @Override
