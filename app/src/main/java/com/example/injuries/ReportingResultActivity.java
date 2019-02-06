@@ -8,9 +8,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import com.example.injuries.base.BaseActivity;
 import com.example.injuries.databinding.ActivityReportingResultBinding;
 
-public class ReportingResultActivity extends AppCompatActivity {
+public class ReportingResultActivity extends BaseActivity {
 
     ActivityReportingResultBinding binding;
     @Override

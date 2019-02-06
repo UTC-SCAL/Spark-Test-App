@@ -10,10 +10,11 @@ import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.example.injuries.base.BaseActivity;
 import com.example.injuries.databinding.ActivityMainBinding;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
 
     ActivityMainBinding binding;

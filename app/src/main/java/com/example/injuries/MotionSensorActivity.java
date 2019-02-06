@@ -11,8 +11,10 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.example.injuries.base.BaseActivity;
+
 @SuppressLint("Registered")
-public class MotionSensorActivity extends AppCompatActivity implements SensorEventListener {
+public class MotionSensorActivity extends BaseActivity implements SensorEventListener {
 
     public static final int SAMPLING_PERIOD_US = 1000000;
     private SensorManager mSensorManager;

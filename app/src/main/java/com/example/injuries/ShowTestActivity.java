@@ -27,7 +27,6 @@ public class ShowTestActivity extends MotionSensorActivity{
     private double previous_angle;
     private double cum_diff = 0;
     private long sample_starting_time = 0;
-    private List testSamples = new ArrayList(5);
 
     private double MIN_ANGLE = 50;
     private double MAX_ANGLE = 70;
