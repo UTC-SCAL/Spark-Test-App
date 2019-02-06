@@ -13,6 +13,12 @@ import android.view.View;
 
 import com.example.injuries.databinding.ActivityShowTestBinding;
 import com.example.injuries.pojos.TestSample;
+import com.example.injuries.pojos.TestSamplesContainer;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.example.injuries.utils.AndroidUtils.vibrate;
 
 public class ShowTestActivity extends MotionSensorActivity{
     public static final int MAX_TESTS_NUMBER = 5;
@@ -25,10 +31,12 @@ public class ShowTestActivity extends MotionSensorActivity{
     private double previous_angle;
     private double cum_diff = 0;
     private long sample_starting_time = 0;
-    private TestSample[] testSamples = new TestSample[5];
+    private List testSamples = new ArrayList(5);
 
     private double MIN_ANGLE = 50;
     private double MAX_ANGLE = 70;
+
+    private TestSamplesContainer testSamplesContainer;
 
 
     private String arrow_combinations[] = {
@@ -54,7 +62,7 @@ public class ShowTestActivity extends MotionSensorActivity{
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_show_test);
         binding.toolbar.setTitle(R.string.frank_test);
-        initlizeTestSamples();
+        testSamplesContainer = new TestSamplesContainer(arrow_combinations.length);
         setTimerSettings();
         setListeners();
 
@@ -62,11 +70,6 @@ public class ShowTestActivity extends MotionSensorActivity{
 
     }
 
-    private void initlizeTestSamples() {
-        for(int i = 0; i < testSamples.length; i++){
-            testSamples[i] = new TestSample();
-        }
-    }
 
     private void setListeners() {
         binding.performTestAgain.setOnClickListener(view -> {
@@ -117,7 +120,7 @@ public class ShowTestActivity extends MotionSensorActivity{
                     else{
                         binding.testArea.setVisibility(View.GONE);
                         binding.performTestAgain.setVisibility(View.VISIBLE);
-                        for(TestSample testSample: testSamples){
+                        for(TestSample testSample: testSamplesContainer){
                             testSample.showInfo();
                         }
 
@@ -148,27 +151,19 @@ public class ShowTestActivity extends MotionSensorActivity{
             Log.i("testing_activity", "" + angle_change + "," + angle);
             if((cum_diff > CUM_MAX && angle > MAX_ANGLE) ||
                     (cum_diff < - CUM_MAX && angle < MIN_ANGLE)){
-                vibrate();
+                vibrate(this);
                 long response_time = System.currentTimeMillis() - sample_starting_time;
                 int testSampleIndex = remaining_tests-1;
                 Log.i("vibration_bug", testSampleIndex + "");
-                testSamples[testSampleIndex].setResponse_time(response_time);
+                testSamplesContainer.setResponseTime(testSampleIndex, response_time);
                 boolean testResult = (isLeft[testSampleIndex] && (cum_diff < - CUM_MAX)) ||
                         !isLeft[testSampleIndex] && (cum_diff > CUM_MAX);
-                testSamples[testSampleIndex].setResultCorrect(testResult);
+                testSamplesContainer.setResultCorrect(testSampleIndex, testResult);
                 previous_angle = angle;
                 cum_diff = 0;
             }
         }
     }
 
-    private void vibrate() {
-        Log.i("testing_activity", "vibration");
-        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            v.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE));
-        } else {
-            v.vibrate(200);
-        }
-    }
+
 }

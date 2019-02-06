@@ -56,14 +56,4 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-    private void vibrate() {
-        Log.i("testing_activity", "vibration");
-        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            v.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE));
-        } else {
-            v.vibrate(200);
-        }
-    }
 }
