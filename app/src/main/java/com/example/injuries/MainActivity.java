@@ -12,13 +12,20 @@ import android.util.Log;
 
 import com.example.injuries.base.BaseActivity;
 import com.example.injuries.databinding.ActivityMainBinding;
+import com.example.injuries.pojos.RotationVector;
 
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends MotionSensorActivity{
 
 
     ActivityMainBinding binding;
+    RotationVector initial_position;
+    float position_update_rate = 0.4f;
 
+    @Override
+    protected void onRotationChanged(double x, double y, double z, double angle) {
+        initial_position.update(position_update_rate, x, y, z, angle);
+    }
 
     @Override
     protected void onPause() {
@@ -38,6 +45,7 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         binding.toolbar.setTitle(R.string.frank_test);
+        initial_position = new RotationVector();
         setButtonEvents();
 
 

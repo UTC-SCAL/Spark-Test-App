@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 
 import com.example.injuries.databinding.ActivityShowTestBinding;
+import com.example.injuries.pojos.RotationVector;
 import com.example.injuries.pojos.TestSamplesContainer;
 
 import java.util.ArrayList;
@@ -60,9 +61,6 @@ public class ShowTestActivity extends MotionSensorActivity{
         testSamplesContainer = new TestSamplesContainer(arrow_combinations.length);
         setTimerSettings();
         setListeners();
-
-
-
     }
 
 
