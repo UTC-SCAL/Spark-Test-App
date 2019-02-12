@@ -1,17 +1,11 @@
 package com.example.injuries;
 
-import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.VibrationEffect;
-import android.os.Vibrator;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
-import com.example.injuries.base.BaseActivity;
 import com.example.injuries.databinding.ActivityMainBinding;
+import com.example.injuries.global.Keys;
 import com.example.injuries.pojos.RotationVector;
 
 
@@ -61,7 +55,9 @@ public class MainActivity extends MotionSensorActivity{
     }
 
     private void startTest() {
-        startActivity(new Intent(this, ShowTestActivity.class));
+        Intent show_test_intent = new Intent(this, ShowTestActivity.class);
+        show_test_intent.putExtra(Keys.INITIAL_POSITIOIN, initial_position);
+        startActivity(show_test_intent);
     }
 
 

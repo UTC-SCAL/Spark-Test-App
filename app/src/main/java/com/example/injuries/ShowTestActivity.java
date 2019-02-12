@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 
 import com.example.injuries.databinding.ActivityShowTestBinding;
+import com.example.injuries.global.Keys;
 import com.example.injuries.pojos.RotationVector;
 import com.example.injuries.pojos.TestSamplesContainer;
 
@@ -21,6 +22,7 @@ public class ShowTestActivity extends MotionSensorActivity{
     public static final int MAX_TESTS_NUMBER = 5;
     private static final double CUM_MAX = 4.0;
     ActivityShowTestBinding binding;
+    RotationVector initial_position;
 
 
     private int remaining_tests = MAX_TESTS_NUMBER;
@@ -59,6 +61,8 @@ public class ShowTestActivity extends MotionSensorActivity{
         binding = DataBindingUtil.setContentView(this, R.layout.activity_show_test);
         binding.toolbar.setTitle(R.string.frank_test);
         testSamplesContainer = new TestSamplesContainer(arrow_combinations.length);
+        //TODO test for null here
+        initial_position = getIntent().getExtras().getParcelable(Keys.INITIAL_POSITIOIN);
         setTimerSettings();
         setListeners();
     }
@@ -136,7 +140,7 @@ public class ShowTestActivity extends MotionSensorActivity{
         else{
             double angle_change = angle - previous_angle;
             cum_diff += angle_change;
-            Log.i("testing_activity", "" + angle_change + "," + angle);
+            Log.i("testing_activity", "" + angle_change + "," + angle + "," + initial_position.getTheta());
             if((cum_diff > CUM_MAX && angle > MAX_ANGLE) ||
                     (cum_diff < - CUM_MAX && angle < MIN_ANGLE)){
                 vibrate(this);
