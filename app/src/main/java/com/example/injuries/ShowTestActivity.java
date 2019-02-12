@@ -11,6 +11,7 @@ import android.view.View;
 import com.example.injuries.databinding.ActivityShowTestBinding;
 import com.example.injuries.global.Keys;
 import com.example.injuries.pojos.RotationVector;
+import com.example.injuries.pojos.TestSample;
 import com.example.injuries.pojos.TestSamplesContainer;
 
 import java.util.ArrayList;
@@ -112,6 +113,9 @@ public class ShowTestActivity extends MotionSensorActivity{
                         show_test_sample();
                     }
                     else{
+                        for(TestSample testSample: testSamplesContainer){
+                            Log.i("testing_activity", "" + testSample.getResponse_time() + " " + testSample.isResultCorrect());
+                        }
                         startActivity(new Intent(ShowTestActivity.this, ReportingResultActivity.class));
                     }
                 }, waiting_time);
@@ -130,9 +134,13 @@ public class ShowTestActivity extends MotionSensorActivity{
 
     @Override
     protected void onRotationChanged(double x, double y, double z, double angle) {
-            double angle_change = angle - initial_position.getTheta();
+            double initial_z_theta = Math.toDegrees(Math.acos(initial_position.getZ()));
+            double current_z_theta = Math.toDegrees(Math.acos(z));
+            double angle_change = initial_z_theta - current_z_theta;
 
-            Log.i("testing_activity", "" + angle_change + "," + angle + "," + initial_position.getTheta());
+        Log.i("testing_activity", "" + initial_z_theta +  "," + current_z_theta  + ", " + angle_change);
+            if(!within_test_period)
+                return;
             if((angle_change > THRESHOLD) || angle_change < -THRESHOLD){
                 vibrate(this);
                 long response_time = System.currentTimeMillis() - sample_starting_time;
@@ -142,6 +150,8 @@ public class ShowTestActivity extends MotionSensorActivity{
                 boolean testResult = (isLeft[testSampleIndex] && (angle_change > THRESHOLD)) ||
                         !isLeft[testSampleIndex] && (angle_change < -THRESHOLD);
                 testSamplesContainer.setResultCorrect(testSampleIndex, testResult);
+                Log.i("testing_activity", "" + testResult +  "," + isLeft[testSampleIndex]);
+                within_test_period = false;
             }
         }
     }

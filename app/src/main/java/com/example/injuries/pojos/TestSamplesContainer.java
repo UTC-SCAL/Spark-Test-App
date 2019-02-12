@@ -55,4 +55,5 @@ public class TestSamplesContainer implements Iterable<TestSample>, Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeList(testSamples);
     }
+
 }
