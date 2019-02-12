@@ -20,19 +20,15 @@ import static com.example.injuries.utils.AndroidUtils.vibrate;
 
 public class ShowTestActivity extends MotionSensorActivity{
     public static final int MAX_TESTS_NUMBER = 5;
-    private static final double CUM_MAX = 4.0;
+    public static final int THRESHOLD = 7;
     ActivityShowTestBinding binding;
     RotationVector initial_position;
 
 
     private int remaining_tests = MAX_TESTS_NUMBER;
     private boolean within_test_period = false;
-    private double previous_angle;
-    private double cum_diff = 0;
     private long sample_starting_time = 0;
 
-    private double MIN_ANGLE = 50;
-    private double MAX_ANGLE = 70;
 
     private TestSamplesContainer testSamplesContainer;
 
@@ -112,6 +108,7 @@ public class ShowTestActivity extends MotionSensorActivity{
                     within_test_period = false;
                     remaining_tests --;
                     if(remaining_tests != 0){
+                        Log.i("testing_activity", "__________________________");
                         show_test_sample();
                     }
                     else{
@@ -133,29 +130,18 @@ public class ShowTestActivity extends MotionSensorActivity{
 
     @Override
     protected void onRotationChanged(double x, double y, double z, double angle) {
-        if(!within_test_period){
-            cum_diff = 0;
-            previous_angle = angle;
-        }
-        else{
-            double angle_change = angle - previous_angle;
-            cum_diff += angle_change;
+            double angle_change = angle - initial_position.getTheta();
+
             Log.i("testing_activity", "" + angle_change + "," + angle + "," + initial_position.getTheta());
-            if((cum_diff > CUM_MAX && angle > MAX_ANGLE) ||
-                    (cum_diff < - CUM_MAX && angle < MIN_ANGLE)){
+            if((angle_change > THRESHOLD) || angle_change < -THRESHOLD){
                 vibrate(this);
                 long response_time = System.currentTimeMillis() - sample_starting_time;
                 int testSampleIndex = remaining_tests-1;
                 Log.i("vibration_bug", testSampleIndex + "");
                 testSamplesContainer.setResponseTime(testSampleIndex, response_time);
-                boolean testResult = (isLeft[testSampleIndex] && (cum_diff < - CUM_MAX)) ||
-                        !isLeft[testSampleIndex] && (cum_diff > CUM_MAX);
+                boolean testResult = (isLeft[testSampleIndex] && (angle_change > THRESHOLD)) ||
+                        !isLeft[testSampleIndex] && (angle_change < -THRESHOLD);
                 testSamplesContainer.setResultCorrect(testSampleIndex, testResult);
-                previous_angle = angle;
-                cum_diff = 0;
             }
         }
     }
-
-
-}
