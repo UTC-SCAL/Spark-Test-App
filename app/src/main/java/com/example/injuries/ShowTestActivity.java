@@ -21,7 +21,7 @@ import static com.example.injuries.utils.AndroidUtils.vibrate;
 
 public class ShowTestActivity extends MotionSensorActivity{
     public static final int MAX_TESTS_NUMBER = 5;
-    public static final int THRESHOLD = 7;
+    public static final int THRESHOLD = 20;
     ActivityShowTestBinding binding;
     RotationVector initial_position;
 
@@ -134,21 +134,24 @@ public class ShowTestActivity extends MotionSensorActivity{
 
     @Override
     protected void onRotationChanged(double x, double y, double z, double angle) {
-            double initial_z_theta = Math.toDegrees(Math.acos(initial_position.getZ()));
-            double current_z_theta = Math.toDegrees(Math.acos(z));
-            double angle_change = initial_z_theta - current_z_theta;
 
-        Log.i("testing_activity", "" + initial_z_theta +  "," + current_z_theta  + ", " + angle_change);
+            double x_diff = initial_position.getX() - x;
+            double y_diff = initial_position.getY() - y;
+            double z_diff = initial_position.getZ() - z;
+
+            double used_axis = x_diff;
+
+        Log.i("testing_activity", "" + x_diff +  "," + y_diff  + ", " + z_diff);
             if(!within_test_period)
                 return;
-            if((angle_change > THRESHOLD) || angle_change < -THRESHOLD){
+            if((used_axis > THRESHOLD) || used_axis < -THRESHOLD){
                 vibrate(this);
                 long response_time = System.currentTimeMillis() - sample_starting_time;
                 int testSampleIndex = remaining_tests-1;
                 Log.i("vibration_bug", testSampleIndex + "");
                 testSamplesContainer.setResponseTime(testSampleIndex, response_time);
-                boolean testResult = (isLeft[testSampleIndex] && (angle_change > THRESHOLD)) ||
-                        !isLeft[testSampleIndex] && (angle_change < -THRESHOLD);
+                boolean testResult = (isLeft[testSampleIndex] && (used_axis > THRESHOLD)) ||
+                        !isLeft[testSampleIndex] && (used_axis < -THRESHOLD);
                 testSamplesContainer.setResultCorrect(testSampleIndex, testResult);
                 Log.i("testing_activity", "" + testResult +  "," + isLeft[testSampleIndex]);
                 within_test_period = false;

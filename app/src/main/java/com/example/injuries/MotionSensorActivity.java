@@ -18,7 +18,7 @@ public class MotionSensorActivity extends BaseActivity implements SensorEventLis
 
     public static final int SAMPLING_PERIOD_US = 1000000;
     private SensorManager mSensorManager;
-    private Sensor mRotationVectorSensor;
+    private Sensor mRotationVectorSensor, Gyroscope;
 
     @Override
     protected void onPause() {
@@ -31,12 +31,14 @@ public class MotionSensorActivity extends BaseActivity implements SensorEventLis
         super.onCreate(savedInstanceState);
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mRotationVectorSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
+        Gyroscope = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         mSensorManager.registerListener(this, mRotationVectorSensor, SAMPLING_PERIOD_US);
+        mSensorManager.registerListener(this, Gyroscope, SAMPLING_PERIOD_US);
 
     }
 
@@ -50,10 +52,20 @@ public class MotionSensorActivity extends BaseActivity implements SensorEventLis
             double theta = Math.acos(cos_theta);
             double sin_theta = Math.sin(theta);
             theta = Math.toDegrees(theta);
-            onRotationChanged(x / sin_theta, y / sin_theta, z / sin_theta, theta);
+            onRotationChanged(convert_to_euler(x / sin_theta),
+                    convert_to_euler(y / sin_theta),
+                    convert_to_euler(z / sin_theta), theta);
+        }
+
+        if(event.sensor.getType() == Sensor.TYPE_GYROSCOPE){
+            this.onGyroscopeChanged(event.values[0], event.values[1], event.values[2]);
         }
     }
 
+
+    private double convert_to_euler(double value){
+        return Math.toDegrees(Math.acos(value));
+    }
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
@@ -61,5 +73,9 @@ public class MotionSensorActivity extends BaseActivity implements SensorEventLis
 
     protected void onRotationChanged(double x, double y, double z, double angle){
         Log.i("rotation_values", "(" + x  + ", " + y + ", " + z + ", " + angle + ")");
+    }
+
+    protected void onGyroscopeChanged(double x, double y, double z){
+
     }
 }
