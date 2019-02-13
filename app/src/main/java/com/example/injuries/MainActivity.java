@@ -47,12 +47,8 @@ public class MainActivity extends MotionSensorActivity{
 
     private void setButtonEvents() {
         binding.startTest.setOnClickListener(view -> startTest());
-        binding.deviceCalibration.setOnClickListener(view -> startCalibration());
     }
 
-    private void startCalibration() {
-        startActivity(new Intent(this, DeviceCaliberation.class));
-    }
 
     private void startTest() {
         Intent show_test_intent = new Intent(this, ShowTestActivity.class);
