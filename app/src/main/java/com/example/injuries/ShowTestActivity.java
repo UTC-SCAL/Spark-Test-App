@@ -14,14 +14,14 @@ import com.example.injuries.pojos.RotationVector;
 import com.example.injuries.pojos.TestSample;
 import com.example.injuries.pojos.TestSamplesContainer;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static com.example.injuries.utils.AndroidUtils.vibrate;
 
 public class ShowTestActivity extends MotionSensorActivity{
     public static final int MAX_TESTS_NUMBER = 5;
     public static final int THRESHOLD = 20;
+    public static final int GROUP_SHOWING_TIME_MS = 300;
+    public static final int TWO_SEC = 200;
+    public static final int STARTING_WAITING_TIME = 1000;
     ActivityShowTestBinding binding;
     RotationVector initial_position;
 
@@ -74,7 +74,7 @@ public class ShowTestActivity extends MotionSensorActivity{
     }
 
     private void setTimerSettings() {
-        new CountDownTimer(6000, 1000) {
+        new CountDownTimer(STARTING_WAITING_TIME, 1000) {
 
             public void onTick(long millisUntilFinished) {
                 binding.timer.setText("" + millisUntilFinished / 1000);
@@ -92,10 +92,12 @@ public class ShowTestActivity extends MotionSensorActivity{
     private void show_test_sample(){
         binding.testArea.setVisibility(View.VISIBLE);
         int sample_number = get_random_sample_number();
+        int groupIndex = remaining_tests - 1;
+        testSamplesContainer.setGroup(groupIndex, arrow_combinations[groupIndex]);
         within_test_period = true;
         sample_starting_time = System.currentTimeMillis();
         binding.testArea.setText(arrow_combinations[sample_number % arrow_combinations.length]);
-        new CountDownTimer(300, 100){
+        new CountDownTimer(GROUP_SHOWING_TIME_MS, 100){
 
             @Override
             public void onTick(long millisUntilFinished) {
@@ -116,7 +118,7 @@ public class ShowTestActivity extends MotionSensorActivity{
                         for(TestSample testSample: testSamplesContainer){
                             Log.i("testing_activity", "" + testSample.getResponse_time() + " " + testSample.isResultCorrect());
                         }
-                        startActivity(new Intent(ShowTestActivity.this, ReportingResultActivity.class));
+                        showResult();
                     }
                 }, waiting_time);
 
@@ -124,8 +126,15 @@ public class ShowTestActivity extends MotionSensorActivity{
         }.start();
     }
 
+    private void showResult() {
+
+        Intent resultIntent = new Intent(ShowTestActivity.this, TestResultShowerActivity.class);
+        resultIntent.putExtra(Keys.SAMPLES_CONTAINER, testSamplesContainer);
+        startActivity(resultIntent);
+    }
+
     private long get_random_waiting_time() {
-        return (long) (Math.random() * 2000 + 2000);
+        return (long) (Math.random() * TWO_SEC + TWO_SEC);
     }
 
     private int get_random_sample_number() {

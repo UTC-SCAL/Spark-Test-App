@@ -12,8 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:screenOrientation="landscape"
-            android:name=".ReportingResultActivity"
+            android:name=".TestResultShowerActivity"
             android:label="@string/title_activity_reporting_result"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity

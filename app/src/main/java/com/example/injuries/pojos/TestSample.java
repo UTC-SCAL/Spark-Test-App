@@ -5,8 +5,18 @@ import android.os.Parcelable;
 import android.util.Log;
 
 public class TestSample implements Parcelable {
-    private long response_time; //time in msec
+    private long response_time = -1; //time in ms
     private boolean isResultCorrect = false;
+
+    public void setGroup(String group) {
+        this.group = group;
+    }
+
+    public String getGroup() {
+        return group;
+    }
+
+    String group = "";
 
     public TestSample() {
         this.response_time = -1;
@@ -16,6 +26,7 @@ public class TestSample implements Parcelable {
     protected TestSample(Parcel in) {
         response_time = in.readLong();
         isResultCorrect = in.readByte() != 0;
+        group = in.readString();
     }
 
     public static final Creator<TestSample> CREATOR = new Creator<TestSample>() {
@@ -59,5 +70,6 @@ public class TestSample implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(response_time);
         dest.writeByte((byte) (isResultCorrect? 1:0));
+        dest.writeString(group);
     }
 }

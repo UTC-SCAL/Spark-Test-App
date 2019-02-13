@@ -10,5 +10,6 @@
     <string name="device_calibration">Device Calibration</string>
     <string name="title_activity_device_caliberation">DeviceCaliberation</string>
     <string name="title_activity_reporting_result">ReportingResult</string>
-    <string name="frank_test">Franker Test</string>
+    <string name="frank_test">Franker\'s Test</string>
+    <string name="frank_test_result">Franker\'s Test Result</string>
 </resources>

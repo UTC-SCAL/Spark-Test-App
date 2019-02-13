@@ -18,7 +18,7 @@ public class TestSamplesContainer implements Iterable<TestSample>, Parcelable {
     }
 
     protected TestSamplesContainer(Parcel in) {
-        testSamples = in.createTypedArrayList(TestSample.CREATOR);
+        testSamples = in.readArrayList(TestSample.class.getClassLoader());
     }
 
     public static final Creator<TestSamplesContainer> CREATOR = new Creator<TestSamplesContainer>() {
@@ -56,4 +56,15 @@ public class TestSamplesContainer implements Iterable<TestSample>, Parcelable {
         dest.writeList(testSamples);
     }
 
+    public void setGroup(int groupIndex, String group) {
+        testSamples.get(groupIndex).setGroup(group);
+    }
+
+    public int getSize() {
+        return testSamples == null ? 0 : testSamples.size();
+    }
+
+    public TestSample getAt(int index) {
+        return testSamples.get(index);
+    }
 }
