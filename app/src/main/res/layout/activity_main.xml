@@ -45,18 +45,5 @@
             android:layout_centerVertical="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-
-        <Button
-            android:layout_below="@+id/guidelines"
-            android:id="@+id/device_calibration"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:text="@string/device_calibration"
-            android:textColor="@android:color/white"
-            android:background="@color/colorPrimary"
-            android:layout_margin="8dp"
-            android:layout_centerVertical="true"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
 </RelativeLayout>
 </layout>

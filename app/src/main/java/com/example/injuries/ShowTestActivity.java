@@ -17,11 +17,14 @@ import com.example.injuries.pojos.TestSamplesContainer;
 import static com.example.injuries.utils.AndroidUtils.vibrate;
 
 public class ShowTestActivity extends MotionSensorActivity{
+    //these numbers represents the test parameters
+    //they should be altered by more experiments
+
     public static final int MAX_TESTS_NUMBER = 5;
     public static final int THRESHOLD = 20;
     public static final int GROUP_SHOWING_TIME_MS = 300;
-    public static final int TWO_SEC = 200;
-    public static final int STARTING_WAITING_TIME = 1000;
+    public static final int TWO_SEC = 2000;
+    public static final int STARTING_WAITING_TIME = 6000;
     ActivityShowTestBinding binding;
     RotationVector initial_position;
 
