@@ -97,7 +97,7 @@ public class ShowTestActivity extends MotionSensorActivity{
         testSamplesContainer.setGroup(groupIndex, arrow_combinations[current_sample_number]);
         within_test_period = true;
         sample_starting_time = System.currentTimeMillis();
-        binding.testArea.setText(arrow_combinations[current_sample_number % arrow_combinations.length]);
+        binding.testArea.setText(arrow_combinations[current_sample_number]);
         new CountDownTimer(GROUP_SHOWING_TIME_MS, 100){
 
             @Override
@@ -139,7 +139,7 @@ public class ShowTestActivity extends MotionSensorActivity{
     }
 
     private int get_random_sample_number() {
-        return (int) Math.ceil(Math.random() * arrow_combinations.length);
+        return (int) Math.floor(Math.random() * arrow_combinations.length);
     }
 
     @Override
