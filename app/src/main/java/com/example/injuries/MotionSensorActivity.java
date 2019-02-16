@@ -16,9 +16,14 @@ import com.example.injuries.base.BaseActivity;
 @SuppressLint("Registered")
 public class MotionSensorActivity extends BaseActivity implements SensorEventListener {
 
-    public static final int SAMPLING_PERIOD_US = 1000000;
+    public static final int SAMPLING_PERIOD_US = 10000000;
     private SensorManager mSensorManager;
-    private Sensor mRotationVectorSensor, Gyroscope;
+    private Sensor mRotationVectorSensor, Gyroscope, mOrientation, accelerometer, magnaticField;
+    private float[] mGravity;
+    private float[] mGeomagnetic;
+    private float azimuth;
+    private float pitch;
+    private float roll;
 
     @Override
     protected void onPause() {
@@ -32,6 +37,9 @@ public class MotionSensorActivity extends BaseActivity implements SensorEventLis
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mRotationVectorSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
         Gyroscope = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+        mOrientation = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
+        accelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        magnaticField = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
     }
 
     @Override
@@ -39,6 +47,9 @@ public class MotionSensorActivity extends BaseActivity implements SensorEventLis
         super.onResume();
         mSensorManager.registerListener(this, mRotationVectorSensor, SAMPLING_PERIOD_US);
         mSensorManager.registerListener(this, Gyroscope, SAMPLING_PERIOD_US);
+        mSensorManager.registerListener(this, mOrientation, SAMPLING_PERIOD_US);
+        mSensorManager.registerListener(this, accelerometer, SAMPLING_PERIOD_US);
+        mSensorManager.registerListener(this, magnaticField, SAMPLING_PERIOD_US);
 
     }
 
@@ -57,8 +68,26 @@ public class MotionSensorActivity extends BaseActivity implements SensorEventLis
                     convert_to_euler(z / sin_theta), theta);
         }
 
-        if(event.sensor.getType() == Sensor.TYPE_GYROSCOPE){
-            this.onGyroscopeChanged(event.values[0], event.values[1], event.values[2]);
+        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER)
+            mGravity = event.values;
+
+        if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD)
+            mGeomagnetic = event.values;
+
+        if (mGravity != null && mGeomagnetic != null) {
+            float R[] = new float[9];
+            float I[] = new float[9];
+
+            boolean success = SensorManager.getRotationMatrix(R, I, mGravity, mGeomagnetic);
+            if (success) {
+                float orientation[] = new float[3];
+                SensorManager.getOrientation(R, orientation);
+                azimuth = (float) Math.toDegrees(orientation[0]); // orientation contains: azimuth, pitch and roll
+                pitch = (float) Math.toDegrees(orientation[1]);
+                roll = (float) Math.toDegrees(orientation[2]);
+                Log.i("new_rotation_values", "(" + azimuth  + ", " + pitch + ", " + roll  + ")");
+
+            }
         }
     }
 
