@@ -8,7 +8,6 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.example.injuries.base.BaseActivity;
@@ -16,7 +15,8 @@ import com.example.injuries.base.BaseActivity;
 @SuppressLint("Registered")
 public class MotionSensorActivity extends BaseActivity implements SensorEventListener {
 
-    public static final int SAMPLING_PERIOD_US = 10000000;
+    public static final int SECONDS_PER_MSC = 1000;
+    public static final int SAMPLING_PERIOD_US = 10000 * SECONDS_PER_MSC;
     private SensorManager mSensorManager;
     private Sensor mRotationVectorSensor, Gyroscope, mOrientation, accelerometer, magnaticField;
     private float[] mGravity;
@@ -63,9 +63,9 @@ public class MotionSensorActivity extends BaseActivity implements SensorEventLis
             double theta = Math.acos(cos_theta);
             double sin_theta = Math.sin(theta);
             theta = Math.toDegrees(theta);
-            onRotationChanged(convert_to_euler(x / sin_theta),
-                    convert_to_euler(y / sin_theta),
-                    convert_to_euler(z / sin_theta), theta);
+//            onRotationChanged(convert_to_euler(x / sin_theta),
+//                    convert_to_euler(y / sin_theta),
+//                    convert_to_euler(z / sin_theta), theta);
         }
 
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER)
@@ -85,10 +85,15 @@ public class MotionSensorActivity extends BaseActivity implements SensorEventLis
                 azimuth = (float) Math.toDegrees(orientation[0]); // orientation contains: azimuth, pitch and roll
                 pitch = (float) Math.toDegrees(orientation[1]);
                 roll = (float) Math.toDegrees(orientation[2]);
-                Log.i("new_rotation_values", "(" + azimuth  + ", " + pitch + ", " + roll  + ")");
+
+                onRotationChanged(angle_abs(azimuth), angle_abs(pitch) , angle_abs(roll), azimuth);
 
             }
         }
+    }
+
+    private double angle_abs(float angle) {
+        return (angle + 360) % 360;
     }
 
 

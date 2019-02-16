@@ -21,7 +21,7 @@ public class ShowTestActivity extends MotionSensorActivity{
     //they should be altered by more experiments
 
     public static final int MAX_TESTS_NUMBER = 5;
-    public static final int THRESHOLD = 12;
+    public static final int THRESHOLD = 20;
     public static final int GROUP_SHOWING_TIME_MS = 300;
     public static final int TWO_SEC = 2000;
     public static final int STARTING_WAITING_TIME = 6000;
@@ -38,19 +38,17 @@ public class ShowTestActivity extends MotionSensorActivity{
 
 
     private String arrow_combinations[] = {
-            "▶ ▶ ◀ ◀ ◀",
-            "▶ ▶ ▶ ▶ ▶",
-            "◀ ◀ ▶ ◀ ◀",
-            "▶ ▶ ◀ ◀ ◀",
-            "◀ ◀ ▶ ◀ ◀"
+            "< < < < <", //left cong.
+            "> > > > >", //right cong.
+            "> > < > >", //left inc.
+            "< < > > >", //right inc.
     };
 
     private boolean[] isLeft = {
       true,
       false,
-      false,
       true,
-      false
+      false,
     };
 
 
@@ -150,9 +148,10 @@ public class ShowTestActivity extends MotionSensorActivity{
             double x_diff = initial_position.getX() - x;
             double y_diff = initial_position.getY() - y;
             double z_diff = initial_position.getZ() - z;
-            initial_position = new RotationVector(x, y, z, angle);
 
-            double used_axis = y_diff;
+            double used_axis = x_diff;
+
+
 
         Log.i("testing_activity", "" + x_diff +  "," + y_diff  + ", " + z_diff);
             if(!within_test_period)

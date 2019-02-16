@@ -19,6 +19,8 @@ public class MainActivity extends MotionSensorActivity{
     @Override
     protected void onRotationChanged(double x, double y, double z, double angle) {
         initial_position.update(position_update_rate, x, y, z, angle);
+        binding.textHolder.setText((int)x + "     " + (int)y + "     " + (int)z + "     ");
+
     }
 
     @Override
@@ -55,6 +57,8 @@ public class MainActivity extends MotionSensorActivity{
         show_test_intent.putExtra(Keys.INITIAL_POSITIOIN, initial_position);
         startActivity(show_test_intent);
     }
+
+
 
 
 }
