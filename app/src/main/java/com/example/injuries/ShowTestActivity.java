@@ -32,6 +32,7 @@ public class ShowTestActivity extends MotionSensorActivity{
     private int remaining_tests = MAX_TESTS_NUMBER;
     private boolean within_test_period = false;
     private long sample_starting_time = 0;
+    private int current_sample_number;
 
 
     private TestSamplesContainer testSamplesContainer;
@@ -91,12 +92,12 @@ public class ShowTestActivity extends MotionSensorActivity{
 
     private void show_test_sample(){
         binding.testArea.setVisibility(View.VISIBLE);
-        int sample_number = get_random_sample_number();
+        current_sample_number = get_random_sample_number();
         int groupIndex = remaining_tests - 1;
-        testSamplesContainer.setGroup(groupIndex, arrow_combinations[groupIndex]);
+        testSamplesContainer.setGroup(groupIndex, arrow_combinations[current_sample_number]);
         within_test_period = true;
         sample_starting_time = System.currentTimeMillis();
-        binding.testArea.setText(arrow_combinations[sample_number % arrow_combinations.length]);
+        binding.testArea.setText(arrow_combinations[current_sample_number % arrow_combinations.length]);
         new CountDownTimer(GROUP_SHOWING_TIME_MS, 100){
 
             @Override
@@ -158,13 +159,11 @@ public class ShowTestActivity extends MotionSensorActivity{
             if((used_axis > THRESHOLD) || used_axis < -THRESHOLD){
                 vibrate(this);
                 long response_time = System.currentTimeMillis() - sample_starting_time;
-                int testSampleIndex = remaining_tests-1;
-                Log.i("vibration_bug", testSampleIndex + "");
-                testSamplesContainer.setResponseTime(testSampleIndex, response_time);
-                boolean testResult = (isLeft[testSampleIndex] && (used_axis > THRESHOLD)) ||
-                        !isLeft[testSampleIndex] && (used_axis < -THRESHOLD);
-                testSamplesContainer.setResultCorrect(testSampleIndex, testResult);
-                Log.i("testing_activity", "" + testResult +  "," + isLeft[testSampleIndex]);
+                testSamplesContainer.setResponseTime(remaining_tests-1, response_time);
+                boolean testResult = (isLeft[current_sample_number] && (used_axis > THRESHOLD)) ||
+                        !isLeft[current_sample_number] && (used_axis < -THRESHOLD);
+                testSamplesContainer.setResultCorrect(remaining_tests-1, testResult);
+                Log.i("testing_activity", "" + testResult +  "," + isLeft[current_sample_number]);
                 within_test_period = false;
             }
         }
