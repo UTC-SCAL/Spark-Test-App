@@ -7,6 +7,8 @@ import android.util.Log;
 public class TestSample implements Parcelable {
     private long response_time = -1; //time in ms
     private boolean isResultCorrect = false;
+    private boolean isCongruent;
+    private boolean isLeft;
 
     public void setGroup(String group) {
         this.group = group;
@@ -27,6 +29,8 @@ public class TestSample implements Parcelable {
         response_time = in.readLong();
         isResultCorrect = in.readByte() != 0;
         group = in.readString();
+        isCongruent = in.readByte() != 0;
+        isLeft = in.readByte() != 0;
     }
 
     public static final Creator<TestSample> CREATOR = new Creator<TestSample>() {
@@ -71,5 +75,7 @@ public class TestSample implements Parcelable {
         dest.writeLong(response_time);
         dest.writeByte((byte) (isResultCorrect? 1:0));
         dest.writeString(group);
+        dest.writeByte((byte) (isCongruent? 1:0));
+        dest.writeByte((byte) (isLeft? 1:0));
     }
 }

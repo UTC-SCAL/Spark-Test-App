@@ -14,17 +14,26 @@ import com.example.injuries.pojos.RotationVector;
 import com.example.injuries.pojos.TestSample;
 import com.example.injuries.pojos.TestSamplesContainer;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import static com.example.injuries.utils.AndroidUtils.vibrate;
 
 public class ShowTestActivity extends MotionSensorActivity{
     //these numbers represents the test parameters
     //they should be altered by more experiments
 
-    public static final int MAX_TESTS_NUMBER = 5;
+    public static final int MAX_TESTS_NUMBER = 20;
     public static final int THRESHOLD = 20;
     public static final int GROUP_SHOWING_TIME_MS = 300;
-    public static final int TWO_SEC = 2000;
+    public static final int WAITING_TIME_RANDOMIZATION_STEP = 500;
+
+
+    private List<Integer> indices;
+    private List<RotationVector> last_rotation_vectors;
     public static final int STARTING_WAITING_TIME = 6000;
+    private static final double ONE_SEC = 1000;
     ActivityShowTestBinding binding;
     RotationVector initial_position;
 
@@ -53,6 +62,14 @@ public class ShowTestActivity extends MotionSensorActivity{
     };
 
 
+    private void initialize_samples_order(){
+        indices = new ArrayList<>();
+        for(int i = 0; i < MAX_TESTS_NUMBER; i++)
+            indices.add(i % arrow_combinations.length);
+        Collections.shuffle(indices);
+    }
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +78,7 @@ public class ShowTestActivity extends MotionSensorActivity{
         binding.toolbar.setTitle(R.string.frank_test);
         testSamplesContainer = new TestSamplesContainer(MAX_TESTS_NUMBER);
         initial_position = getIntent().getExtras().getParcelable(Keys.INITIAL_POSITIOIN);
+        initialize_samples_order();
         setTimerSettings();
         setListeners();
     }
@@ -69,7 +87,7 @@ public class ShowTestActivity extends MotionSensorActivity{
     private void setListeners() {
         binding.performTestAgain.setOnClickListener(view -> {
             binding.performTestAgain.setVisibility(View.GONE);
-            remaining_tests = 5;
+            remaining_tests = MAX_TESTS_NUMBER;
             show_test_sample();
         });
     }
@@ -92,7 +110,8 @@ public class ShowTestActivity extends MotionSensorActivity{
 
     private void show_test_sample(){
         binding.testArea.setVisibility(View.VISIBLE);
-        current_sample_number = get_random_sample_number();
+        current_sample_number = indices.get(remaining_tests -1);
+        indices.remove(remaining_tests -1);
         int groupIndex = remaining_tests - 1;
         testSamplesContainer.setGroup(groupIndex, arrow_combinations[current_sample_number]);
         within_test_period = true;
@@ -135,7 +154,7 @@ public class ShowTestActivity extends MotionSensorActivity{
     }
 
     private long get_random_waiting_time() {
-        return (long) (Math.random() * TWO_SEC + TWO_SEC);
+        return (long) (Math.random() * ONE_SEC + WAITING_TIME_RANDOMIZATION_STEP);
     }
 
     private int get_random_sample_number() {
@@ -149,22 +168,48 @@ public class ShowTestActivity extends MotionSensorActivity{
             double y_diff = initial_position.getY() - y;
             double z_diff = initial_position.getZ() - z;
 
-            double used_axis = x_diff;
+            last_rotation_vectors.add(new RotationVector(x, y, z, angle));
+            double corrected_x_diff = get_corrected_diff(last_rotation_vectors);
 
 
+            //TODO solve the calibration problem
 
         Log.i("testing_activity", "" + x_diff +  "," + y_diff  + ", " + z_diff);
             if(!within_test_period)
                 return;
-            if((used_axis > THRESHOLD) || used_axis < -THRESHOLD){
+            if((corrected_x_diff > THRESHOLD) || corrected_x_diff < -THRESHOLD){
                 vibrate(this);
                 long response_time = System.currentTimeMillis() - sample_starting_time;
                 testSamplesContainer.setResponseTime(remaining_tests-1, response_time);
-                boolean testResult = (isLeft[current_sample_number] && (used_axis > THRESHOLD)) ||
-                        !isLeft[current_sample_number] && (used_axis < -THRESHOLD);
+                boolean testResult = (isLeft[current_sample_number] && (corrected_x_diff > THRESHOLD)) ||
+                        !isLeft[current_sample_number] && (corrected_x_diff < -THRESHOLD);
                 testSamplesContainer.setResultCorrect(remaining_tests-1, testResult);
                 Log.i("testing_activity", "" + testResult +  "," + isLeft[current_sample_number]);
                 within_test_period = false;
+                last_rotation_vectors.clear();
             }
         }
+
+    private double get_corrected_diff(List<RotationVector> last_rotation_vectors) {
+        if(last_rotation_vectors.size() < 5)
+            return 0;
+        List<Double> differences = new ArrayList<>(last_rotation_vectors.size());
+        for(RotationVector r : last_rotation_vectors)
+            differences.add(initial_position.getX() - r.getX());
+        double average = calculate_average(differences);
+        for(Double diff : differences){
+            if(diff > average + THRESHOLD)
+                differences.remove(diff);
+        }
+        if(differences.size() < 5)
+            return 0;
+        return calculate_average(differences);
     }
+
+    private double calculate_average(List<Double> differences) {
+        double sum = 0;
+        for(Double value: differences)
+            sum += value;
+        return sum / differences.size();
+    }
+}
