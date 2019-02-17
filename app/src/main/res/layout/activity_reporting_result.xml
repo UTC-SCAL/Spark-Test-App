@@ -20,10 +20,66 @@
                 android:background="?attr/colorPrimary"
                 app:popupTheme="@style/AppTheme.PopupOverlay" />
         </android.support.design.widget.AppBarLayout>
-
-
-        <Button
+        <TextView
+            android:textSize="24sp"
+            android:textColor="@android:color/holo_green_dark"
+            android:id="@+id/test_details_title"
+            android:padding="8dp"
             android:layout_below="@id/appbar"
+            android:text="Results"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <View
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:id="@+id/text_separator"
+            android:background="@android:color/black"
+            android:layout_below="@id/test_details_title"
+            android:layout_width="match_parent"
+            android:layout_height="2dp" />
+        <TextView
+            android:id="@+id/response_time_title"
+            android:layout_alignLeft="@id/text_separator"
+            android:layout_below="@id/text_separator"
+            android:text="Average Response Time"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:textColor="@android:color/holo_green_dark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/response_time_value"
+            android:layout_alignLeft="@id/text_separator"
+            android:layout_below="@id/response_time_title"
+            android:text="120 MS"
+            android:textSize="20sp"
+            android:layout_marginTop="4dp"
+            android:textColor="@android:color/black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/corrected_responses_percentage"
+            android:layout_alignLeft="@id/text_separator"
+            android:layout_below="@id/response_time_value"
+            android:text="Percentage of Correct Responses"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:textColor="@android:color/holo_green_dark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/corrected_responses_percentage_value"
+            android:layout_alignLeft="@id/text_separator"
+            android:layout_below="@id/corrected_responses_percentage"
+            android:text="85%"
+            android:textSize="20sp"
+            android:layout_marginTop="4dp"
+            android:textColor="@android:color/black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <Button
+            android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:id="@+id/go_to_home"
             android:layout_margin="8dp"

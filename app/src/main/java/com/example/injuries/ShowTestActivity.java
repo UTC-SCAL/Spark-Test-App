@@ -76,7 +76,6 @@ public class ShowTestActivity extends MotionSensorActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_show_test);
-        binding.toolbar.setTitle(R.string.frank_test);
         testSamplesContainer = new TestSamplesContainer(MAX_TESTS_NUMBER);
         initial_position = getIntent().getExtras().getParcelable(Keys.INITIAL_POSITIOIN);
         last_rotation_vectors = new ArrayList<>();
