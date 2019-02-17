@@ -21,30 +21,27 @@ import java.util.List;
 import static com.example.injuries.utils.AndroidUtils.vibrate;
 
 public class ShowTestActivity extends MotionSensorActivity{
-    //these numbers represents the test parameters
-    //they should be altered by more experiments
 
     public static final int MAX_TESTS_NUMBER = 20;
     public static final int THRESHOLD = 20;
     public static final int GROUP_SHOWING_TIME_MS = 300;
     public static final int WAITING_TIME_RANDOMIZATION_STEP = 500;
-
-
+    public static final int MSC_PER_SEC = 1000;
     private List<Integer> indices;
-    private List<RotationVector> last_rotation_vectors;
     public static final int STARTING_WAITING_TIME = 6000;
     private static final double ONE_SEC = 1000;
-    ActivityShowTestBinding binding;
     RotationVector initial_position;
-
-
     private int remaining_tests = MAX_TESTS_NUMBER;
     private boolean within_test_period = false;
     private long sample_starting_time = 0;
     private int current_sample_number;
-
-
     private TestSamplesContainer testSamplesContainer;
+    List<RotationVector> last_rotation_vectors;
+
+
+
+    ActivityShowTestBinding binding;
+
 
 
     private String arrow_combinations[] = {
@@ -78,6 +75,7 @@ public class ShowTestActivity extends MotionSensorActivity{
         binding.toolbar.setTitle(R.string.frank_test);
         testSamplesContainer = new TestSamplesContainer(MAX_TESTS_NUMBER);
         initial_position = getIntent().getExtras().getParcelable(Keys.INITIAL_POSITIOIN);
+        last_rotation_vectors = new ArrayList<>();
         initialize_samples_order();
         setTimerSettings();
         setListeners();
@@ -96,7 +94,7 @@ public class ShowTestActivity extends MotionSensorActivity{
         new CountDownTimer(STARTING_WAITING_TIME, 1000) {
 
             public void onTick(long millisUntilFinished) {
-                binding.timer.setText("" + millisUntilFinished / 1000);
+                binding.timer.setText("" + millisUntilFinished / MSC_PER_SEC);
             }
 
             public void onFinish() {
@@ -191,19 +189,21 @@ public class ShowTestActivity extends MotionSensorActivity{
         }
 
     private double get_corrected_diff(List<RotationVector> last_rotation_vectors) {
+
+        List<Double> last_five_differences = new ArrayList<>(last_rotation_vectors.size());
         if(last_rotation_vectors.size() < 5)
             return 0;
-        List<Double> differences = new ArrayList<>(last_rotation_vectors.size());
-        for(RotationVector r : last_rotation_vectors)
-            differences.add(initial_position.getX() - r.getX());
-        double average = calculate_average(differences);
-        for(Double diff : differences){
-            if(diff > average + THRESHOLD)
-                differences.remove(diff);
+        for(int i = last_rotation_vectors.size() - 1; i > (last_rotation_vectors.size() - 6) ; i--) {
+            last_five_differences.add(initial_position.getX() - last_rotation_vectors.get(i).getX());
         }
-        if(differences.size() < 5)
-            return 0;
-        return calculate_average(differences);
+        double average = calculate_average(last_five_differences);
+        for(Double diff : last_five_differences){
+            if(Math.abs(diff) > Math.abs(average) + THRESHOLD) {
+                last_five_differences.remove(diff);
+                return 0;
+            }
+        }
+        return calculate_average(last_five_differences);
     }
 
     private double calculate_average(List<Double> differences) {
