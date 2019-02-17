@@ -6,7 +6,25 @@ import android.util.Log;
 
 public class TestSample implements Parcelable {
     private long response_time = -1; //time in ms
+
+    public void setCongruent(boolean congruent) {
+        isCongruent = congruent;
+    }
+
+    public void setLeft(boolean left) {
+        isLeft = left;
+    }
+
     private boolean isResultCorrect = false;
+
+    public boolean isCongruent() {
+        return isCongruent;
+    }
+
+    public boolean isLeft() {
+        return isLeft;
+    }
+
     private boolean isCongruent;
     private boolean isLeft;
 

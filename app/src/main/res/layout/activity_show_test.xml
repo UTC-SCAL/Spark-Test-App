@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
     <RelativeLayout
+        android:background="@android:color/black"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".ShowTestActivity">
@@ -29,10 +30,11 @@
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"
             android:id="@+id/timer"
+            android:textColor="@android:color/white"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <TextView
-            android:textColor="@android:color/black"
+            android:textColor="@android:color/white"
             android:layout_margin="40dp"
             android:visibility="gone"
             android:id="@+id/test_area"

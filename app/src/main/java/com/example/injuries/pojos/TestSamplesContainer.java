@@ -41,6 +41,14 @@ public class TestSamplesContainer implements Iterable<TestSample>, Parcelable {
         testSamples.get(index).setResultCorrect(isResultCorrect);
     }
 
+
+    public void setCongruent(int index, boolean isCongruent){
+        testSamples.get(index).setCongruent(isCongruent);
+    }
+
+    public void setLeft(int index, boolean isLeft){
+        testSamples.get(index).setLeft(isLeft);
+    }
     @Override
     public Iterator<TestSample> iterator() {
         return testSamples.iterator();

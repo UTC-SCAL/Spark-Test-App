@@ -56,6 +56,13 @@ public class ShowTestActivity extends MotionSensorActivity {
             false,
     };
 
+    private boolean[] isCongurent = {
+      true,
+      true,
+      false,
+      false
+    };
+
 
     private void initialize_samples_order() {
         indices = new ArrayList<>();
@@ -109,6 +116,7 @@ public class ShowTestActivity extends MotionSensorActivity {
         current_sample_number = indices.get(sample_index);
         indices.remove(sample_index);
         testSamplesContainer.setGroup(sample_index, arrow_combinations[current_sample_number]);
+
         within_test_period = true;
         sample_starting_time = System.currentTimeMillis();
         binding.testArea.setText(arrow_combinations[current_sample_number]);
@@ -168,16 +176,22 @@ public class ShowTestActivity extends MotionSensorActivity {
             return;
         if (Math.abs(corrected_x_diff) > THRESHOLD) {
             vibrate(this);
-            int groupIndex = remaining_tests - 1;
-            long response_time = System.currentTimeMillis() - sample_starting_time;
-            testSamplesContainer.setResponseTime( groupIndex, response_time);
             boolean testResult = (isLeft[current_sample_number] && (corrected_x_diff > THRESHOLD)) ||
                     !isLeft[current_sample_number] && (corrected_x_diff < -THRESHOLD);
-            testSamplesContainer.setResultCorrect(remaining_tests - 1, testResult);
+            setTestSampleValues(testResult);
             Log.i("testing_activity", "" + testResult + "," + isLeft[current_sample_number]);
             within_test_period = false;
             last_rotation_vectors.clear();
         }
+    }
+
+    private void setTestSampleValues(boolean testResult) {
+        int groupIndex = remaining_tests - 1;
+        long response_time = System.currentTimeMillis() - sample_starting_time;
+        testSamplesContainer.setResponseTime( groupIndex, response_time);
+        testSamplesContainer.setResultCorrect(groupIndex, testResult);
+        testSamplesContainer.setCongruent(groupIndex, isCongurent[current_sample_number]);
+        testSamplesContainer.setLeft(groupIndex, isLeft[current_sample_number]);
     }
 
     private double get_corrected_diff(List<RotationVector> last_rotation_vectors) {
