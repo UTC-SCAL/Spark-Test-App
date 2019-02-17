@@ -129,12 +129,11 @@ public class ShowTestActivity extends MotionSensorActivity {
             @Override
             public void onFinish() {
                 long waiting_time = get_random_waiting_time();
-                binding.testArea.setText("Waiting for the user response ...");
+                binding.testArea.setText("");
                 new Handler().postDelayed(() -> {
                     within_test_period = false;
                     remaining_tests--;
                     if (remaining_tests != 0) {
-                        Log.i("testing_activity", "__________________________");
                         show_test_sample();
                     } else {
                         for (TestSample testSample : testSamplesContainer) {
