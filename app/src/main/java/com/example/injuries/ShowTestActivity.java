@@ -20,7 +20,7 @@ import java.util.List;
 
 import static com.example.injuries.utils.AndroidUtils.vibrate;
 
-public class ShowTestActivity extends MotionSensorActivity{
+public class ShowTestActivity extends MotionSensorActivity {
 
     public static final int MAX_TESTS_NUMBER = 20;
     public static final int THRESHOLD = 20;
@@ -39,9 +39,7 @@ public class ShowTestActivity extends MotionSensorActivity{
     List<RotationVector> last_rotation_vectors;
 
 
-
     ActivityShowTestBinding binding;
-
 
 
     private String arrow_combinations[] = {
@@ -52,20 +50,19 @@ public class ShowTestActivity extends MotionSensorActivity{
     };
 
     private boolean[] isLeft = {
-      true,
-      false,
-      true,
-      false,
+            true,
+            false,
+            true,
+            false,
     };
 
 
-    private void initialize_samples_order(){
+    private void initialize_samples_order() {
         indices = new ArrayList<>();
-        for(int i = 0; i < MAX_TESTS_NUMBER; i++)
+        for (int i = 0; i < MAX_TESTS_NUMBER; i++)
             indices.add(i % arrow_combinations.length);
         Collections.shuffle(indices);
     }
-
 
 
     @Override
@@ -106,16 +103,16 @@ public class ShowTestActivity extends MotionSensorActivity{
 
     }
 
-    private void show_test_sample(){
+    private void show_test_sample() {
         binding.testArea.setVisibility(View.VISIBLE);
-        current_sample_number = indices.get(remaining_tests -1);
-        indices.remove(remaining_tests -1);
-        int groupIndex = remaining_tests - 1;
-        testSamplesContainer.setGroup(groupIndex, arrow_combinations[current_sample_number]);
+        int sample_index = remaining_tests - 1;
+        current_sample_number = indices.get(sample_index);
+        indices.remove(sample_index);
+        testSamplesContainer.setGroup(sample_index, arrow_combinations[current_sample_number]);
         within_test_period = true;
         sample_starting_time = System.currentTimeMillis();
         binding.testArea.setText(arrow_combinations[current_sample_number]);
-        new CountDownTimer(GROUP_SHOWING_TIME_MS, 100){
+        new CountDownTimer(GROUP_SHOWING_TIME_MS, 100) {
 
             @Override
             public void onTick(long millisUntilFinished) {
@@ -127,13 +124,12 @@ public class ShowTestActivity extends MotionSensorActivity{
                 binding.testArea.setText("Waiting for the user response ...");
                 new Handler().postDelayed(() -> {
                     within_test_period = false;
-                    remaining_tests --;
-                    if(remaining_tests != 0){
+                    remaining_tests--;
+                    if (remaining_tests != 0) {
                         Log.i("testing_activity", "__________________________");
                         show_test_sample();
-                    }
-                    else{
-                        for(TestSample testSample: testSamplesContainer){
+                    } else {
+                        for (TestSample testSample : testSamplesContainer) {
                             Log.i("testing_activity", "" + testSample.getResponse_time() + " " + testSample.isResultCorrect());
                         }
                         showResult();
@@ -155,50 +151,46 @@ public class ShowTestActivity extends MotionSensorActivity{
         return (long) (Math.random() * ONE_SEC + WAITING_TIME_RANDOMIZATION_STEP);
     }
 
-    private int get_random_sample_number() {
-        return (int) Math.floor(Math.random() * arrow_combinations.length);
-    }
 
     @Override
     protected void onRotationChanged(double x, double y, double z, double angle) {
 
-            double x_diff = initial_position.getX() - x;
-            double y_diff = initial_position.getY() - y;
-            double z_diff = initial_position.getZ() - z;
+        double x_diff = initial_position.getX() - x;
+        double y_diff = initial_position.getY() - y;
+        double z_diff = initial_position.getZ() - z;
 
-            last_rotation_vectors.add(new RotationVector(x, y, z, angle));
-            double corrected_x_diff = get_corrected_diff(last_rotation_vectors);
+        last_rotation_vectors.add(new RotationVector(x, y, z, angle));
+        double corrected_x_diff = get_corrected_diff(last_rotation_vectors);
 
 
-            //TODO solve the calibration problem
-
-        Log.i("testing_activity", "" + x_diff +  "," + y_diff  + ", " + z_diff);
-            if(!within_test_period)
-                return;
-            if((corrected_x_diff > THRESHOLD) || corrected_x_diff < -THRESHOLD){
-                vibrate(this);
-                long response_time = System.currentTimeMillis() - sample_starting_time;
-                testSamplesContainer.setResponseTime(remaining_tests-1, response_time);
-                boolean testResult = (isLeft[current_sample_number] && (corrected_x_diff > THRESHOLD)) ||
-                        !isLeft[current_sample_number] && (corrected_x_diff < -THRESHOLD);
-                testSamplesContainer.setResultCorrect(remaining_tests-1, testResult);
-                Log.i("testing_activity", "" + testResult +  "," + isLeft[current_sample_number]);
-                within_test_period = false;
-                last_rotation_vectors.clear();
-            }
+        Log.i("testing_activity", "" + x_diff + "," + y_diff + ", " + z_diff);
+        if (!within_test_period)
+            return;
+        if (Math.abs(corrected_x_diff) > THRESHOLD) {
+            vibrate(this);
+            int groupIndex = remaining_tests - 1;
+            long response_time = System.currentTimeMillis() - sample_starting_time;
+            testSamplesContainer.setResponseTime( groupIndex, response_time);
+            boolean testResult = (isLeft[current_sample_number] && (corrected_x_diff > THRESHOLD)) ||
+                    !isLeft[current_sample_number] && (corrected_x_diff < -THRESHOLD);
+            testSamplesContainer.setResultCorrect(remaining_tests - 1, testResult);
+            Log.i("testing_activity", "" + testResult + "," + isLeft[current_sample_number]);
+            within_test_period = false;
+            last_rotation_vectors.clear();
         }
+    }
 
     private double get_corrected_diff(List<RotationVector> last_rotation_vectors) {
 
         List<Double> last_five_differences = new ArrayList<>(last_rotation_vectors.size());
-        if(last_rotation_vectors.size() < 5)
+        if (last_rotation_vectors.size() < 5)
             return 0;
-        for(int i = last_rotation_vectors.size() - 1; i > (last_rotation_vectors.size() - 6) ; i--) {
+        for (int i = last_rotation_vectors.size() - 1; i > (last_rotation_vectors.size() - 6); i--) {
             last_five_differences.add(initial_position.getX() - last_rotation_vectors.get(i).getX());
         }
         double average = calculate_average(last_five_differences);
-        for(Double diff : last_five_differences){
-            if(Math.abs(diff) > Math.abs(average) + THRESHOLD) {
+        for (Double diff : last_five_differences) {
+            if (Math.abs(diff) > Math.abs(average) + THRESHOLD) {
                 last_five_differences.remove(diff);
                 return 0;
             }
@@ -208,7 +200,7 @@ public class ShowTestActivity extends MotionSensorActivity{
 
     private double calculate_average(List<Double> differences) {
         double sum = 0;
-        for(Double value: differences)
+        for (Double value : differences)
             sum += value;
         return sum / differences.size();
     }
