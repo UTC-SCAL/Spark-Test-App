@@ -29,7 +29,7 @@ public class TestResultShowerActivity extends BaseActivity {
 
     private void showTestData() {
         binding.correctedResponsesPercentageValue.setText(getTestAccuracy() + "%");
-        binding.responseTimeValue.setText(getAvgResTime() + " MS");
+        binding.responseTimeValue.setText(getAvgResTime() + " ms");
     }
 
     private double getAvgResTime(){

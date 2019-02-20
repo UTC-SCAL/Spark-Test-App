@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static com.example.injuries.utils.AndroidUtils.playSound;
 import static com.example.injuries.utils.AndroidUtils.vibrate;
 
 public class ShowTestActivity extends MotionSensorActivity {
@@ -173,7 +174,7 @@ public class ShowTestActivity extends MotionSensorActivity {
         if (!within_test_period)
             return;
         if (Math.abs(corrected_x_diff) > THRESHOLD) {
-            vibrate(this);
+            playSound(this);
             boolean testResult = (isLeft[current_sample_number] && (corrected_x_diff > THRESHOLD)) ||
                     !isLeft[current_sample_number] && (corrected_x_diff < -THRESHOLD);
             setTestSampleValues(testResult);
