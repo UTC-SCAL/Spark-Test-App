@@ -85,18 +85,22 @@ public class ShowTestActivity extends MotionSensorActivity {
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_show_test);
+    protected void onStart() {
+        super.onStart();
         testSamplesContainer = new TestSamplesContainer(MAX_TESTS_NUMBER);
         initial_position = getIntent().getExtras().getParcelable(Keys.INITIAL_POSITIOIN);
         initialize_samples_order();
         setTimerSettings();
         setListeners();
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_show_test);
     }
 
 
