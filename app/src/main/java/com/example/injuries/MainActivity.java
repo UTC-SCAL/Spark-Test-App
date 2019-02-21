@@ -8,13 +8,15 @@ import com.example.injuries.databinding.ActivityMainBinding;
 import com.example.injuries.global.Keys;
 import com.example.injuries.pojos.RotationVector;
 
+import static com.example.injuries.utils.AndroidUtils.playSound;
+
 
 public class MainActivity extends MotionSensorActivity{
 
 
     ActivityMainBinding binding;
     RotationVector initial_position;
-    float position_update_rate = 0.4f;
+    float position_update_rate = 0.8f;
 
     @Override
     protected void onRotationChanged(double x, double y, double z, double angle) {
@@ -57,8 +59,5 @@ public class MainActivity extends MotionSensorActivity{
         show_test_intent.putExtra(Keys.INITIAL_POSITIOIN, initial_position);
         startActivity(show_test_intent);
     }
-
-
-
 
 }

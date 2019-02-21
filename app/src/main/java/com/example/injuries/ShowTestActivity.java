@@ -19,15 +19,15 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.example.injuries.utils.AndroidUtils.playSound;
-import static com.example.injuries.utils.AndroidUtils.vibrate;
 
 public class ShowTestActivity extends MotionSensorActivity {
 
-    public static final int MAX_TESTS_NUMBER = 20;
-    public static final int THRESHOLD = 20;
+    public static final int MAX_TESTS_NUMBER = 7;
+    public static final int THRESHOLD = 25; // in degrees
     public static final int GROUP_SHOWING_TIME_MS = 300;
     public static final int WAITING_TIME_RANDOMIZATION_STEP = 500;
     public static final int MSC_PER_SEC = 1000;
+    private static final int TEST_ACCURACY_SIZE = 3;
     private List<Integer> indices;
     public static final int STARTING_WAITING_TIME = 6000;
     private static final double ONE_SEC = 1000;
@@ -50,11 +50,19 @@ public class ShowTestActivity extends MotionSensorActivity {
             "< < > > >", //right inc.
     };
 
+//    private boolean[] isLeft = {
+//            true,
+//            false,
+//            true,
+//            false,
+//    };
+
+//    this is wrong
     private boolean[] isLeft = {
             true,
-            false,
             true,
-            false,
+            true,
+            true,
     };
 
     private boolean[] isCongurent = {
@@ -161,16 +169,9 @@ public class ShowTestActivity extends MotionSensorActivity {
 
     @Override
     protected void onRotationChanged(double x, double y, double z, double angle) {
-
-        double x_diff = initial_position.getX() - x;
-        double y_diff = initial_position.getY() - y;
-        double z_diff = initial_position.getZ() - z;
-
         last_rotation_vectors.add(new RotationVector(x, y, z, angle));
         double corrected_x_diff = get_corrected_diff(last_rotation_vectors);
 
-
-        Log.i("testing_activity", "" + x_diff + "," + y_diff + ", " + z_diff);
         if (!within_test_period)
             return;
         if (Math.abs(corrected_x_diff) > THRESHOLD) {
@@ -178,9 +179,9 @@ public class ShowTestActivity extends MotionSensorActivity {
             boolean testResult = (isLeft[current_sample_number] && (corrected_x_diff > THRESHOLD)) ||
                     !isLeft[current_sample_number] && (corrected_x_diff < -THRESHOLD);
             setTestSampleValues(testResult);
-            Log.i("testing_activity", "" + testResult + "," + isLeft[current_sample_number]);
             within_test_period = false;
             last_rotation_vectors.clear();
+
         }
     }
 
@@ -195,20 +196,20 @@ public class ShowTestActivity extends MotionSensorActivity {
 
     private double get_corrected_diff(List<RotationVector> last_rotation_vectors) {
 
-        List<Double> last_five_differences = new ArrayList<>(last_rotation_vectors.size());
-        if (last_rotation_vectors.size() < 5)
+        List<Double> N_differences = new ArrayList<>(TEST_ACCURACY_SIZE);
+        if (last_rotation_vectors.size() < TEST_ACCURACY_SIZE)
             return 0;
-        for (int i = last_rotation_vectors.size() - 1; i > (last_rotation_vectors.size() - 6); i--) {
-            last_five_differences.add(initial_position.getX() - last_rotation_vectors.get(i).getX());
+        for (int i = last_rotation_vectors.size() - 1; i > (last_rotation_vectors.size() - TEST_ACCURACY_SIZE - 1); i--) {
+            N_differences.add(initial_position.getX() - last_rotation_vectors.get(i).getX());
         }
-        double average = calculate_average(last_five_differences);
-        for (Double diff : last_five_differences) {
+        double average = calculate_average(N_differences);
+        for (Double diff : N_differences) {
             if (Math.abs(diff) > Math.abs(average) + THRESHOLD) {
-                last_five_differences.remove(diff);
+                N_differences.remove(diff);
                 return 0;
             }
         }
-        return calculate_average(last_five_differences);
+        return calculate_average(N_differences);
     }
 
     private double calculate_average(List<Double> differences) {

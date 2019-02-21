@@ -1,6 +1,7 @@
 package com.example.injuries.utils;
 
 import android.content.Context;
+import android.media.MediaPlayer;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -8,25 +9,19 @@ import android.os.Build;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 
+import com.example.injuries.R;
+
 public class AndroidUtils {
-    public static void vibrate(Context context) {
-        Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            v.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE));
-        } else {
-            v.vibrate(200);
-        }
-    }
+    private static Context context;
+    private static MediaPlayer mediaPlayer;
 
 
     public static void playSound(Context context){
-        try {
-            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-            Ringtone r = RingtoneManager.getRingtone(context, notification);
-            r.play();
-        } catch (Exception e) {
-            e.printStackTrace();
+        if(context != AndroidUtils.context || AndroidUtils.mediaPlayer == null) {
+            AndroidUtils.context = context;
+            mediaPlayer = MediaPlayer.create(context, R.raw.button_09);
         }
+        mediaPlayer.start();
 
     }
 }

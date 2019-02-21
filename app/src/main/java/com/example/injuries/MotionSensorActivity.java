@@ -16,7 +16,7 @@ import com.example.injuries.base.BaseActivity;
 public class MotionSensorActivity extends BaseActivity implements SensorEventListener {
 
     public static final int SECONDS_PER_MSC = 1000;
-    public static final int SAMPLING_PERIOD_US = 10000 * SECONDS_PER_MSC;
+    public static final int SAMPLING_PERIOD_US = 1000 * SECONDS_PER_MSC;
     private SensorManager mSensorManager;
     private Sensor mRotationVectorSensor, Gyroscope, mOrientation, accelerometer, magnaticField;
     private float[] mGravity;
@@ -55,18 +55,6 @@ public class MotionSensorActivity extends BaseActivity implements SensorEventLis
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        if (event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR) {
-            float cos_theta = event.values[3];
-            double x = event.values[0];
-            double y = event.values[1];
-            double z = event.values[2] ;
-            double theta = Math.acos(cos_theta);
-            double sin_theta = Math.sin(theta);
-            theta = Math.toDegrees(theta);
-//            onRotationChanged(convert_to_euler(x / sin_theta),
-//                    convert_to_euler(y / sin_theta),
-//                    convert_to_euler(z / sin_theta), theta);
-        }
 
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER)
             mGravity = event.values;

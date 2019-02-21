@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class RotationVector implements Parcelable {
+
     double x;
     double y;
     double z;
@@ -59,7 +60,9 @@ public class RotationVector implements Parcelable {
         this.theta = theta;
     }
 
+    //the update rate is used for the new values
     public void update(float position_update_rate, double new_x, double new_y, double new_z, double new_angle) {
+        position_update_rate = 1 - position_update_rate;
         this.x = position_update_rate * this.x + (1 - position_update_rate) * new_x;
         this.y = position_update_rate * this.y + (1 - position_update_rate) * new_y;
         this.z = position_update_rate * this.z + (1 - position_update_rate) * new_z;
@@ -77,5 +80,9 @@ public class RotationVector implements Parcelable {
         dest.writeDouble(y);
         dest.writeDouble(z);
         dest.writeDouble(theta);
+    }
+
+    public void update(RotationVector rotationVector, float update_rate) {
+        this.update(update_rate, rotationVector.getX(), rotationVector.getY(), rotationVector.getZ(), rotationVector.getTheta());
     }
 }

@@ -29,7 +29,7 @@ public class TestResultShowerActivity extends BaseActivity {
 
     private void showTestData() {
         binding.correctedResponsesPercentageValue.setText(getTestAccuracy() + "%");
-        binding.responseTimeValue.setText(getAvgResTime() + " ms");
+        binding.responseTimeValue.setText((int)getAvgResTime() + " ms");
     }
 
     private double getAvgResTime(){
@@ -53,6 +53,7 @@ public class TestResultShowerActivity extends BaseActivity {
     private void setEvents() {
         binding.goToHome.setOnClickListener(view -> {
             startActivity(new Intent(this, MainActivity.class));
+            finish();
         });
     }
 
