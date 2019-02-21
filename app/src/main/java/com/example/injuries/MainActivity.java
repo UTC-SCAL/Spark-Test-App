@@ -3,6 +3,7 @@ package com.example.injuries;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.example.injuries.databinding.ActivityMainBinding;
 import com.example.injuries.global.Keys;
@@ -22,6 +23,7 @@ public class MainActivity extends MotionSensorActivity{
     protected void onRotationChanged(double x, double y, double z, double angle) {
         initial_position.update(position_update_rate, x, y, z, angle);
         binding.textHolder.setText((int)x + "     " + (int)y + "     " + (int)z + "     ");
+        Log.i("just_x", "" + x);
 
     }
 

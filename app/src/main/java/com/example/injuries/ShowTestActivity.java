@@ -7,12 +7,15 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.example.injuries.databinding.ActivityShowTestBinding;
 import com.example.injuries.global.Keys;
 import com.example.injuries.pojos.RotationVector;
 import com.example.injuries.pojos.TestSample;
 import com.example.injuries.pojos.TestSamplesContainer;
+import com.example.injuries.utils.VectorsList;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,11 +26,11 @@ import static com.example.injuries.utils.AndroidUtils.playSound;
 public class ShowTestActivity extends MotionSensorActivity {
 
     public static final int MAX_TESTS_NUMBER = 7;
-    public static final int THRESHOLD = 25; // in degrees
+    public static final int THRESHOLD = 15; // in degrees
     public static final int GROUP_SHOWING_TIME_MS = 300;
-    public static final int WAITING_TIME_RANDOMIZATION_STEP = 500;
+    public static final int WAITING_TIME_RANDOMIZATION_STEP = 1000;
     public static final int MSC_PER_SEC = 1000;
-    private static final int TEST_ACCURACY_SIZE = 3;
+    private static final int TEST_ACCURACY_SIZE = 2;
     private List<Integer> indices;
     public static final int STARTING_WAITING_TIME = 6000;
     private static final double ONE_SEC = 1000;
@@ -37,7 +40,7 @@ public class ShowTestActivity extends MotionSensorActivity {
     private long sample_starting_time = 0;
     private int current_sample_number;
     private TestSamplesContainer testSamplesContainer;
-    List<RotationVector> last_rotation_vectors;
+    VectorsList last_rotation_vectors = new VectorsList(TEST_ACCURACY_SIZE);
 
 
     ActivityShowTestBinding binding;
@@ -84,10 +87,13 @@ public class ShowTestActivity extends MotionSensorActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         binding = DataBindingUtil.setContentView(this, R.layout.activity_show_test);
         testSamplesContainer = new TestSamplesContainer(MAX_TESTS_NUMBER);
         initial_position = getIntent().getExtras().getParcelable(Keys.INITIAL_POSITIOIN);
-        last_rotation_vectors = new ArrayList<>();
         initialize_samples_order();
         setTimerSettings();
         setListeners();
@@ -160,6 +166,7 @@ public class ShowTestActivity extends MotionSensorActivity {
         Intent resultIntent = new Intent(ShowTestActivity.this, TestResultShowerActivity.class);
         resultIntent.putExtra(Keys.SAMPLES_CONTAINER, testSamplesContainer);
         startActivity(resultIntent);
+        finish();
     }
 
     private long get_random_waiting_time() {
@@ -176,8 +183,9 @@ public class ShowTestActivity extends MotionSensorActivity {
             return;
         if (Math.abs(corrected_x_diff) > THRESHOLD) {
             playSound(this);
-            boolean testResult = (isLeft[current_sample_number] && (corrected_x_diff > THRESHOLD)) ||
-                    !isLeft[current_sample_number] && (corrected_x_diff < -THRESHOLD);
+            Log.i("corrected_x_diff", " = " + corrected_x_diff);
+            boolean testResult = (isLeft[current_sample_number] && (corrected_x_diff > 0)) ||
+                    !isLeft[current_sample_number] && (corrected_x_diff < 0);
             setTestSampleValues(testResult);
             within_test_period = false;
             last_rotation_vectors.clear();
@@ -199,22 +207,17 @@ public class ShowTestActivity extends MotionSensorActivity {
         List<Double> N_differences = new ArrayList<>(TEST_ACCURACY_SIZE);
         if (last_rotation_vectors.size() < TEST_ACCURACY_SIZE)
             return 0;
-        for (int i = last_rotation_vectors.size() - 1; i > (last_rotation_vectors.size() - TEST_ACCURACY_SIZE - 1); i--) {
-            N_differences.add(initial_position.getX() - last_rotation_vectors.get(i).getX());
-        }
+        for (RotationVector vector: last_rotation_vectors)
+            N_differences.add(vector.getX() - initial_position.getX());
         double average = calculate_average(N_differences);
-        for (Double diff : N_differences) {
-            if (Math.abs(diff) > Math.abs(average) + THRESHOLD) {
-                N_differences.remove(diff);
-                return 0;
-            }
-        }
-        return calculate_average(N_differences);
+        if(Math.abs(average) > 3 * THRESHOLD)
+            return 0;
+        return average;
     }
 
     private double calculate_average(List<Double> differences) {
         double sum = 0;
-        for (Double value : differences)
+        for (double value : differences)
             sum += value;
         return sum / differences.size();
     }
