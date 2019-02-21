@@ -25,7 +25,7 @@ import static com.example.injuries.utils.AndroidUtils.playSound;
 
 public class ShowTestActivity extends MotionSensorActivity {
 
-    public static final int MAX_TESTS_NUMBER = 7;
+    public static final int MAX_TESTS_NUMBER = 20;
     public static final int THRESHOLD = 15; // in degrees
     public static final int GROUP_SHOWING_TIME_MS = 300;
     public static final int WAITING_TIME_RANDOMIZATION_STEP = 1000;
@@ -53,20 +53,20 @@ public class ShowTestActivity extends MotionSensorActivity {
             "< < > > >", //right inc.
     };
 
-//    private boolean[] isLeft = {
-//            true,
-//            false,
-//            true,
-//            false,
-//    };
-
-//    this is wrong
     private boolean[] isLeft = {
             true,
+            false,
             true,
-            true,
-            true,
+            false,
     };
+
+//   this is wrong
+//    private boolean[] isLeft = {
+//            true,
+//            true,
+//            true,
+//            true,
+//    };
 
     private boolean[] isCongurent = {
       true,
