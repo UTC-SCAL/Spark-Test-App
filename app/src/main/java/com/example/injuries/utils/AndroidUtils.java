@@ -19,7 +19,7 @@ public class AndroidUtils {
     public static void playSound(Context context){
         if(context != AndroidUtils.context || AndroidUtils.mediaPlayer == null) {
             AndroidUtils.context = context;
-            mediaPlayer = MediaPlayer.create(context, R.raw.button_09);
+            mediaPlayer = MediaPlayer.create(context, R.raw.beep_07);
         }
         mediaPlayer.start();
 
