@@ -31,10 +31,12 @@ public class ShowTestActivity extends MotionSensorActivity {
     public static final int WAITING_TIME_RANDOMIZATION_STEP = 1000;
     public static final int MSC_PER_SEC = 1000;
     private static final int TEST_ACCURACY_SIZE = 2;
+    public static final float INITIAL_POSITION_UPDATE_RATE = 0.4f;
     private List<Integer> indices;
     public static final int STARTING_WAITING_TIME = 6000;
     private static final double ONE_SEC = 1000;
     RotationVector initial_position;
+    RotationVector updated_initial_position;
     private int remaining_tests = MAX_TESTS_NUMBER;
     private boolean within_test_period = false;
     private long sample_starting_time = 0;
@@ -47,10 +49,10 @@ public class ShowTestActivity extends MotionSensorActivity {
 
 
     private String arrow_combinations[] = {
-            "< < < < <", //left cong.
-            "> > > > >", //right cong.
-            "> > < > >", //left inc.
-            "< < > > >", //right inc.
+            "<<<<<", //left cong.
+            ">>>>>", //right cong.
+            ">><>>", //left inc.
+            "<<><<", //right inc.
     };
 
     private boolean[] isLeft = {
@@ -89,6 +91,7 @@ public class ShowTestActivity extends MotionSensorActivity {
         super.onStart();
         testSamplesContainer = new TestSamplesContainer(MAX_TESTS_NUMBER);
         initial_position = getIntent().getExtras().getParcelable(Keys.INITIAL_POSITIOIN);
+        updated_initial_position = new RotationVector(initial_position);
         initialize_samples_order();
         setTimerSettings();
         setListeners();
@@ -138,6 +141,7 @@ public class ShowTestActivity extends MotionSensorActivity {
         within_test_period = true;
         sample_starting_time = System.currentTimeMillis();
         binding.testArea.setText(arrow_combinations[current_sample_number]);
+        initial_position = new RotationVector(updated_initial_position);
         new CountDownTimer(GROUP_SHOWING_TIME_MS, 100) {
 
             @Override
@@ -180,6 +184,8 @@ public class ShowTestActivity extends MotionSensorActivity {
 
     @Override
     protected void onRotationChanged(double x, double y, double z, double angle) {
+        super.onRotationChanged(x, y, z, angle);
+        updated_initial_position.update(INITIAL_POSITION_UPDATE_RATE, x, y, z, angle);
         last_rotation_vectors.add(new RotationVector(x, y, z, angle));
         double corrected_x_diff = get_corrected_diff(last_rotation_vectors);
 

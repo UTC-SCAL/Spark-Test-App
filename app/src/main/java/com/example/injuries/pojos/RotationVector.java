@@ -23,6 +23,13 @@ public class RotationVector implements Parcelable {
         theta = in.readDouble();
     }
 
+    public RotationVector(RotationVector copy){
+        this.x = copy.x;
+        this.y = copy.y;
+        this.z = copy.z;
+        this.theta = copy.theta;
+    }
+
     public static final Creator<RotationVector> CREATOR = new Creator<RotationVector>() {
         @Override
         public RotationVector createFromParcel(Parcel in) {

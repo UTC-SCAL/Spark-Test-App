@@ -22,7 +22,7 @@
             android:layout_margin="40dp"
             android:visibility="gone"
             android:id="@+id/test_area"
-            android:textSize="50sp"
+            android:textSize="100sp"
             android:layout_below="@id/timer"
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"

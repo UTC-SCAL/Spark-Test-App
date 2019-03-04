@@ -16,7 +16,7 @@ import com.example.injuries.base.BaseActivity;
 public class MotionSensorActivity extends BaseActivity implements SensorEventListener {
 
     public static final int SECONDS_PER_MSC = 1000;
-    public static final int SAMPLING_PERIOD_US = 1000 * SECONDS_PER_MSC;
+    public static final int SAMPLING_PERIOD_US = 10000 * SECONDS_PER_MSC;
     private SensorManager mSensorManager;
     private Sensor mRotationVectorSensor, Gyroscope, mOrientation, accelerometer, magnaticField;
     private float[] mGravity;
