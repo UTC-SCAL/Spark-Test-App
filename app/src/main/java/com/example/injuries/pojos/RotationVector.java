@@ -67,12 +67,10 @@ public class RotationVector implements Parcelable {
         this.theta = theta;
     }
 
-    //the update rate is used for the new values
     public void update(float position_update_rate, double new_x, double new_y, double new_z, double new_angle) {
-        position_update_rate = 1 - position_update_rate;
-        this.x = position_update_rate * this.x + (1 - position_update_rate) * new_x;
-        this.y = position_update_rate * this.y + (1 - position_update_rate) * new_y;
-        this.z = position_update_rate * this.z + (1 - position_update_rate) * new_z;
+        this.x = position_update_rate * new_x + (1 - position_update_rate) * this.x;
+        this.y = position_update_rate * new_y + (1 - position_update_rate) * this.y ;
+        this.z = position_update_rate * new_z + (1 - position_update_rate) * this.z;
         this.theta = position_update_rate * this.theta + (1 - position_update_rate) * new_angle;
     }
 

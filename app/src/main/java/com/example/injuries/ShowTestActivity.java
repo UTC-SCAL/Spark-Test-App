@@ -26,12 +26,12 @@ import static com.example.injuries.utils.AndroidUtils.playSound;
 public class ShowTestActivity extends MotionSensorActivity {
 
     public static final int MAX_TESTS_NUMBER = 20;
-    public static final int THRESHOLD = 15; // in degrees
+    public static final int THRESHOLD = 2; // in degrees
     public static final int GROUP_SHOWING_TIME_MS = 300;
     public static final int WAITING_TIME_RANDOMIZATION_STEP = 1000;
     public static final int MSC_PER_SEC = 1000;
-    private static final int TEST_ACCURACY_SIZE = 2;
-    public static final float INITIAL_POSITION_UPDATE_RATE = 0.4f;
+    private static final int TEST_ACCURACY_SIZE = 3;
+    public static final float INITIAL_POSITION_UPDATE_RATE = 1f;
     private List<Integer> indices;
     public static final int STARTING_WAITING_TIME = 6000;
     private static final double ONE_SEC = 1000;
@@ -55,14 +55,14 @@ public class ShowTestActivity extends MotionSensorActivity {
             "<<><<", //right inc.
     };
 
-    private boolean[] isLeft = {
-            true,
+    private boolean[] isRight = {
             false,
             true,
             false,
+            true,
     };
 
-//   this is wrong
+////   this is wrong
 //    private boolean[] isLeft = {
 //            true,
 //            true,
@@ -142,6 +142,7 @@ public class ShowTestActivity extends MotionSensorActivity {
         sample_starting_time = System.currentTimeMillis();
         binding.testArea.setText(arrow_combinations[current_sample_number]);
         initial_position = new RotationVector(updated_initial_position);
+        Log.i("init_pos", "" + initial_position.getX());
         new CountDownTimer(GROUP_SHOWING_TIME_MS, 100) {
 
             @Override
@@ -194,8 +195,9 @@ public class ShowTestActivity extends MotionSensorActivity {
         if (Math.abs(corrected_x_diff) > THRESHOLD) {
             playSound(this);
             Log.i("corrected_x_diff", " = " + corrected_x_diff);
-            boolean testResult = (isLeft[current_sample_number] && (corrected_x_diff > 0)) ||
-                    !isLeft[current_sample_number] && (corrected_x_diff < 0);
+            boolean testResult = (isRight[current_sample_number] && (corrected_x_diff > 0)) ||
+                    !isRight[current_sample_number] && (corrected_x_diff < 0);
+            Log.i("rotation_values", "res = " + testResult + ", diff= " + corrected_x_diff);
             setTestSampleValues(testResult);
             within_test_period = false;
             last_rotation_vectors.clear();
@@ -209,7 +211,7 @@ public class ShowTestActivity extends MotionSensorActivity {
         testSamplesContainer.setResponseTime( groupIndex, response_time);
         testSamplesContainer.setResultCorrect(groupIndex, testResult);
         testSamplesContainer.setCongruent(groupIndex, isCongurent[current_sample_number]);
-        testSamplesContainer.setLeft(groupIndex, isLeft[current_sample_number]);
+        testSamplesContainer.setLeft(groupIndex, isRight[current_sample_number]);
     }
 
     private double get_corrected_diff(List<RotationVector> last_rotation_vectors) {
@@ -220,8 +222,8 @@ public class ShowTestActivity extends MotionSensorActivity {
         for (RotationVector vector: last_rotation_vectors)
             N_differences.add(vector.getX() - initial_position.getX());
         double average = calculate_average(N_differences);
-        if(Math.abs(average) > 3 * THRESHOLD)
-            return 0;
+//        if(Math.abs(average) > 3 * THRESHOLD)
+//            return 0;
         return average;
     }
 

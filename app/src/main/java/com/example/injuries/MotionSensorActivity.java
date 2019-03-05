@@ -12,11 +12,11 @@ import android.util.Log;
 
 import com.example.injuries.base.BaseActivity;
 
+
 @SuppressLint("Registered")
 public class MotionSensorActivity extends BaseActivity implements SensorEventListener {
 
-    public static final int SECONDS_PER_MSC = 1000;
-    public static final int SAMPLING_PERIOD_US = 10000 * SECONDS_PER_MSC;
+    public static final int SAMPLING_PERIOD_US = SensorManager.SENSOR_DELAY_GAME;
     private SensorManager mSensorManager;
     private Sensor mRotationVectorSensor, Gyroscope, mOrientation, accelerometer, magnaticField;
     private float[] mGravity;
@@ -56,8 +56,13 @@ public class MotionSensorActivity extends BaseActivity implements SensorEventLis
     @Override
     public void onSensorChanged(SensorEvent event) {
 
-        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER)
+        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
             mGravity = event.values;
+        }
+
+        if(event.sensor.getType() == Sensor.TYPE_GYROSCOPE){
+            onRotationChanged(event.values[0], event.values[1] , event.values[2], azimuth);
+        }
 
         if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD)
             mGeomagnetic = event.values;
@@ -70,17 +75,18 @@ public class MotionSensorActivity extends BaseActivity implements SensorEventLis
             if (success) {
                 float orientation[] = new float[3];
                 SensorManager.getOrientation(R, orientation);
-                azimuth = (float) Math.toDegrees(orientation[0]); // orientation contains: azimuth, pitch and roll
+                azimuth = (float) Math.toDegrees(orientation[0]);
                 pitch = (float) Math.toDegrees(orientation[1]);
                 roll = (float) Math.toDegrees(orientation[2]);
 
-                onRotationChanged(angle_abs(azimuth), angle_abs(pitch) , angle_abs(roll), azimuth);
+//                onRotationChanged(angle_abs(azimuth), angle_abs(pitch) , angle_abs(roll), azimuth);
 
             }
         }
     }
 
     private double angle_abs(float angle) {
+//        return angle;
         return (angle + 360) % 360;
     }
 
