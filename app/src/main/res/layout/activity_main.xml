@@ -21,13 +21,40 @@
         </android.support.design.widget.AppBarLayout>
 
         <Button
+            android:layout_marginTop="100dp"
+            android:layout_below="@id/appbar"
+            android:id="@+id/practise"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:text="@string/practice"
+            android:layout_marginRight="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginBottom="8dp"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:layout_below="@id/practise"
             android:id="@+id/start_test"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
             android:layout_margin="8dp"
             android:background="@color/colorPrimary"
-            android:text="@string/start_test"
+            android:text="@string/main_test"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:layout_below="@id/start_test"
+            android:id="@+id/advanced_test"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:background="@color/colorPrimary"
+            android:text="@string/advanced_test"
             android:textColor="@android:color/white"
             android:textSize="20sp"
             android:textStyle="bold" />

@@ -13,4 +13,7 @@
     <string name="frank_test">Franker\'s Test</string>
     <string name="frank_test_result">Franker\'s Test Result</string>
     <string name="guidelines">Please fix the device in the neutral position until you see the first group of symbols</string>
+    <string name="practice">Practice</string>
+    <string name="main_test">Main Test</string>
+    <string name="advanced_test">Advanced Test</string>
 </resources>
