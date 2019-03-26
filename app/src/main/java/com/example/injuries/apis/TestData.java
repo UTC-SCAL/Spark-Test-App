@@ -9,6 +9,10 @@ public class TestData {
     @Expose
     private String id;
 
+    @SerializedName("test_entries")
+    @Expose
+    private List<>
+
 
     public String getId() {
         return id;
@@ -17,5 +21,7 @@ public class TestData {
     public void setId(String id) {
         this.id = id;
     }
+
+
 
 }

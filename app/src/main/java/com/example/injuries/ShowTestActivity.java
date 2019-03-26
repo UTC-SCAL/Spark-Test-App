@@ -215,8 +215,6 @@ public class ShowTestActivity extends MotionSensorActivity {
         for (RotationVector vector: last_rotation_vectors)
             N_differences.add(vector.getX() - initial_position.getX());
         double average = calculate_average(N_differences);
-//        if(Math.abs(average) > 3 * THRESHOLD)
-//            return 0;
         return average;
     }
 
