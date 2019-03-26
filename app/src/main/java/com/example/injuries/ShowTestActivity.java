@@ -62,13 +62,6 @@ public class ShowTestActivity extends MotionSensorActivity {
             true,
     };
 
-////   this is wrong
-//    private boolean[] isLeft = {
-//            true,
-//            true,
-//            true,
-//            true,
-//    };
 
     private boolean[] isCongurent = {
       true,

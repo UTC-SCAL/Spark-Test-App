@@ -16,4 +16,5 @@
     <string name="practice">Practice</string>
     <string name="main_test">Main Test</string>
     <string name="advanced_test">Advanced Test</string>
+    <string name="tester_id">Candidate ID</string>
 </resources>
