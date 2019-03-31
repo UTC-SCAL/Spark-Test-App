@@ -69,6 +69,7 @@ public class ShowTestActivity extends MotionSensorActivity {
       false,
       false
     };
+    private String candidate_id;
 
 
     private void initialize_samples_order() {
@@ -84,6 +85,7 @@ public class ShowTestActivity extends MotionSensorActivity {
         super.onStart();
         testSamplesContainer = new TestSamplesContainer(MAX_TESTS_NUMBER);
         initial_position = getIntent().getExtras().getParcelable(Keys.INITIAL_POSITIOIN);
+        candidate_id = getIntent().getExtras().getString(Keys.CANDIDATE_ID);
         updated_initial_position = new RotationVector(initial_position);
         initialize_samples_order();
         setTimerSettings();

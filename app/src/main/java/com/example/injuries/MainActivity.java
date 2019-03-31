@@ -3,13 +3,10 @@ package com.example.injuries;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.example.injuries.databinding.ActivityMainBinding;
 import com.example.injuries.global.Keys;
 import com.example.injuries.pojos.RotationVector;
-
-import static com.example.injuries.utils.AndroidUtils.playSound;
 
 
 public class MainActivity extends MotionSensorActivity{
@@ -62,7 +59,7 @@ public class MainActivity extends MotionSensorActivity{
         }
         Intent show_test_intent = new Intent(this, ShowTestActivity.class);
         show_test_intent.putExtra(Keys.INITIAL_POSITIOIN, initial_position);
-        show_test_intent.putExtra(Keys.USER_ID, binding.candidateId.getText().toString());
+        show_test_intent.putExtra(Keys.CANDIDATE_ID, binding.candidateId.getText().toString());
         startActivity(show_test_intent);
     }
 
