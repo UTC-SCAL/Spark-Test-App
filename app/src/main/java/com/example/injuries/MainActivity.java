@@ -56,12 +56,13 @@ public class MainActivity extends MotionSensorActivity{
 
 
     private void startTest() {
-//        if(binding.userId.getText().length() != ID_LENGTH){
-//            return;
-//        }
+        if(binding.candidateId.getText().length() != ID_LENGTH){
+            binding.candidateId.setError(getString(R.string.id_message));
+            return;
+        }
         Intent show_test_intent = new Intent(this, ShowTestActivity.class);
         show_test_intent.putExtra(Keys.INITIAL_POSITIOIN, initial_position);
-//        show_test_intent.putExtra(Keys.USER_ID, binding.userId.getText().toString());
+        show_test_intent.putExtra(Keys.USER_ID, binding.candidateId.getText().toString());
         startActivity(show_test_intent);
     }
 

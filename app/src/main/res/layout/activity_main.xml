@@ -31,8 +31,9 @@
             android:textColor="@android:color/white"
             android:textSize="20sp"
             android:textStyle="bold" />
-        <TextView
-            android:textSize="18sp"
+        <EditText
+            android:id="@+id/candidate_id"
+            android:inputType="number"
             android:layout_margin="8dp"
             android:layout_above="@id/start_test"
             android:hint="@string/tester_id"
