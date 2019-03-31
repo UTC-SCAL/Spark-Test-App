@@ -8,6 +8,7 @@ public class TestSample implements Parcelable {
     private long response_time = -1; //time in ms
     private boolean isCongruent;
     private boolean isLeft;
+    private boolean isCorrect = false;
 
 
     public void setCongruent(boolean congruent) {
@@ -18,7 +19,6 @@ public class TestSample implements Parcelable {
         isLeft = left;
     }
 
-    private boolean isResultCorrect = false;
 
     public boolean isCongruent() {
         return isCongruent;
@@ -31,12 +31,12 @@ public class TestSample implements Parcelable {
 
     public TestSample() {
         this.response_time = -1;
-        this.isResultCorrect = false;
+        this.isCorrect = false;
     }
 
     protected TestSample(Parcel in) {
         response_time = in.readLong();
-        isResultCorrect = in.readByte() != 0;
+        isCorrect = in.readByte() != 0;
         isCongruent = in.readByte() != 0;
         isLeft = in.readByte() != 0;
     }
@@ -61,16 +61,16 @@ public class TestSample implements Parcelable {
         this.response_time = response_time;
     }
 
-    public boolean isResultCorrect() {
-        return isResultCorrect;
+    public boolean isCorrect() {
+        return isCorrect;
     }
 
-    public void setResultCorrect(boolean resultCorrect) {
-        isResultCorrect = resultCorrect;
+    public void setCorrect(boolean correct) {
+        isCorrect = correct;
     }
 
     public void showInfo() {
-        Log.i("test_sample", "(time, res) = (" + response_time + ", " + isResultCorrect + ")");
+        Log.i("test_sample", "(time, res) = (" + response_time + ", " + isCorrect + ")");
     }
 
     @Override
@@ -81,7 +81,7 @@ public class TestSample implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(response_time);
-        dest.writeByte((byte) (isResultCorrect? 1:0));
+        dest.writeByte((byte) (isCorrect ? 1:0));
         dest.writeByte((byte) (isCongruent? 1:0));
         dest.writeByte((byte) (isLeft? 1:0));
     }

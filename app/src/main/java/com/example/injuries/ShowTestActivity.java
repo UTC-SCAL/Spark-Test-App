@@ -129,7 +129,6 @@ public class ShowTestActivity extends MotionSensorActivity {
         int sample_index = remaining_tests - 1;
         current_sample_number = indices.get(sample_index);
         indices.remove(sample_index);
-        testSamplesContainer.setGroup(sample_index, arrow_combinations[current_sample_number]);
 
         within_test_period = true;
         sample_starting_time = System.currentTimeMillis();
@@ -153,7 +152,7 @@ public class ShowTestActivity extends MotionSensorActivity {
                         show_test_sample();
                     } else {
                         for (TestSample testSample : testSamplesContainer) {
-                            Log.i("testing_activity", "" + testSample.getResponse_time() + " " + testSample.isResultCorrect());
+                            Log.i("testing_activity", "" + testSample.getResponse_time() + " " + testSample.isCorrect());
                         }
                         showResult();
                     }

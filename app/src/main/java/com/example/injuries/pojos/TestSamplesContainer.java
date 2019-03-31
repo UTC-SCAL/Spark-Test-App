@@ -38,7 +38,7 @@ public class TestSamplesContainer implements Iterable<TestSample>, Parcelable {
     }
 
     public void setResultCorrect(int index, boolean isResultCorrect){
-        testSamples.get(index).setResultCorrect(isResultCorrect);
+        testSamples.get(index).setCorrect(isResultCorrect);
     }
 
 
@@ -64,9 +64,6 @@ public class TestSamplesContainer implements Iterable<TestSample>, Parcelable {
         dest.writeList(testSamples);
     }
 
-    public void setGroup(int groupIndex, String group) {
-        testSamples.get(groupIndex).setGroup(group);
-    }
 
     public int getSize() {
         return testSamples == null ? 0 : testSamples.size();

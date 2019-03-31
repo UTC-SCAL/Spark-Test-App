@@ -43,7 +43,7 @@ public class TestResultShowerActivity extends BaseActivity {
     private int getTestAccuracy(){
         double res = 0;
         for(TestSample testSample: container){
-            if(testSample.isResultCorrect())
+            if(testSample.isCorrect())
                 res ++;
         }
         if(res != 0)
