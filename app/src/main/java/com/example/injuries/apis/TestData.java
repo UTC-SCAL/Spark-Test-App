@@ -8,7 +8,7 @@ import java.util.List;
 
 public class TestData {
 
-    @SerializedName("id")
+    @SerializedName("candidate_id")
     @Expose
     private String id;
 

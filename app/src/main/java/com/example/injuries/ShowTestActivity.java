@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.example.injuries.apis.NetworkCaller;
+import com.example.injuries.apis.TestData;
 import com.example.injuries.databinding.ActivityShowTestBinding;
 import com.example.injuries.global.Keys;
 import com.example.injuries.pojos.RotationVector;
@@ -21,17 +23,22 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 import static com.example.injuries.utils.AndroidUtils.playSound;
 
 public class ShowTestActivity extends MotionSensorActivity {
 
-    public static final int MAX_TESTS_NUMBER = 20;
+    public static final int MAX_TESTS_NUMBER = 2;
     public static final int THRESHOLD = 2; // in degrees
     public static final int GROUP_SHOWING_TIME_MS = 300;
     public static final int WAITING_TIME_RANDOMIZATION_STEP = 1000;
     public static final int MSC_PER_SEC = 1000;
     private static final int TEST_ACCURACY_SIZE = 3;
     public static final float INITIAL_POSITION_UPDATE_RATE = 1f;
+    public static final String FIRST_TEST = "1";
     private List<Integer> indices;
     public static final int STARTING_WAITING_TIME = 6000;
     private static final double ONE_SEC = 1000;
@@ -168,9 +175,12 @@ public class ShowTestActivity extends MotionSensorActivity {
 
         Intent resultIntent = new Intent(ShowTestActivity.this, TestResultShowerActivity.class);
         resultIntent.putExtra(Keys.SAMPLES_CONTAINER, testSamplesContainer);
+        resultIntent.putExtra(Keys.CANDIDATE_ID, candidate_id);
+        resultIntent.putExtra(Keys.TEST_ID, FIRST_TEST);
         startActivity(resultIntent);
-        finish();
     }
+
+
 
     private long get_random_waiting_time() {
         return (long) (Math.random() * ONE_SEC + WAITING_TIME_RANDOMIZATION_STEP);

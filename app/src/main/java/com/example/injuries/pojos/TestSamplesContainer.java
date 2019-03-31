@@ -8,6 +8,10 @@ import java.util.Iterator;
 import java.util.List;
 
 public class TestSamplesContainer implements Iterable<TestSample>, Parcelable {
+    public List<TestSample> getTestSamples() {
+        return testSamples;
+    }
+
     private List<TestSample> testSamples;
 
     public TestSamplesContainer(int maxSize) {
