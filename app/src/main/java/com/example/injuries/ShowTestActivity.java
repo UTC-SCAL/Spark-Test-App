@@ -10,8 +10,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.example.injuries.apis.NetworkCaller;
-import com.example.injuries.apis.TestData;
 import com.example.injuries.databinding.ActivityShowTestBinding;
 import com.example.injuries.global.Keys;
 import com.example.injuries.pojos.RotationVector;
@@ -23,15 +21,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
 import static com.example.injuries.utils.AndroidUtils.playSound;
 
 public class ShowTestActivity extends MotionSensorActivity {
 
-    public static final int MAX_TESTS_NUMBER = 2;
+    public static final int MAX_TESTS_NUMBER = 20;
     public static final int THRESHOLD = 2; // in degrees
     public static final int GROUP_SHOWING_TIME_MS = 300;
     public static final int WAITING_TIME_RANDOMIZATION_STEP = 1000;

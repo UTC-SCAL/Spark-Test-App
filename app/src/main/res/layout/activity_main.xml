@@ -32,7 +32,6 @@
             android:textSize="20sp"
             android:textStyle="bold" />
         <EditText
-            android:text="12345"
             android:id="@+id/candidate_id"
             android:inputType="number"
             android:layout_margin="8dp"
