@@ -79,6 +79,9 @@ public class TestResultShowerActivity extends BaseActivity {
 
                 if(response.isSuccessful()){
                 }
+                else{
+
+                }
             }
 
             @Override
