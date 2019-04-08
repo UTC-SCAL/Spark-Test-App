@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.example.injuries.utils.AndroidUtils.playSound;
+import static com.example.injuries.utils.AndroidUtils.vibrate;
 
 public class ShowTestActivity extends MotionSensorActivity {
 
@@ -44,6 +45,8 @@ public class ShowTestActivity extends MotionSensorActivity {
     private int current_sample_number;
     private TestSamplesContainer testSamplesContainer;
     VectorsList last_rotation_vectors = new VectorsList(TEST_ACCURACY_SIZE);
+
+    private boolean in_critical_period = false;
 
 
     ActivityShowTestBinding binding;
@@ -149,20 +152,27 @@ public class ShowTestActivity extends MotionSensorActivity {
                 long waiting_time = get_random_waiting_time();
                 binding.testArea.setText("");
                 new Handler().postDelayed(() -> {
-                    within_test_period = false;
-                    remaining_tests--;
-                    if (remaining_tests != 0) {
-                        show_test_sample();
-                    } else {
-                        for (TestSample testSample : testSamplesContainer) {
-                            Log.i("testing_activity", "" + testSample.getResponse_time() + " " + testSample.isCorrect());
-                        }
-                        showResult();
-                    }
+                    if(within_test_period)
+                        askUserResponse();
+                     else
+                        applyUserResponse();
                 }, waiting_time);
 
             }
         }.start();
+    }
+
+    private void askUserResponse() {
+        vibrate(ShowTestActivity.this);
+        in_critical_period = true;
+    }
+
+    private void applyUserResponse() {
+        remaining_tests--;
+        if (remaining_tests != 0) {
+            show_test_sample();
+        } else
+            showResult();
     }
 
     private void showResult() {
@@ -190,6 +200,7 @@ public class ShowTestActivity extends MotionSensorActivity {
 
         if (!within_test_period)
             return;
+        //then within test period is true
         if (Math.abs(corrected_x_diff) > THRESHOLD) {
             playSound(this);
             Log.i("corrected_x_diff", " = " + corrected_x_diff);
@@ -199,6 +210,10 @@ public class ShowTestActivity extends MotionSensorActivity {
             setTestSampleValues(testResult);
             within_test_period = false;
             last_rotation_vectors.clear();
+            if(in_critical_period){
+                in_critical_period = false;
+                applyUserResponse();
+            }
 
         }
     }
