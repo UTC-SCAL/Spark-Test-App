@@ -11,6 +11,7 @@ import com.example.injuries.databinding.ActivityReportingResultBinding;
 import com.example.injuries.global.Keys;
 import com.example.injuries.pojos.TestSample;
 import com.example.injuries.pojos.TestSamplesContainer;
+import com.example.injuries.utils.AndroidUtils;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -78,6 +79,8 @@ public class TestResultShowerActivity extends BaseActivity {
             public void onResponse(Call<Object> call, Response<Object> response) {
 
                 if(response.isSuccessful()){
+                    AndroidUtils.showDialogue("Results has been saved permanently",
+                            TestResultShowerActivity.this);
                 }
                 else{
 
@@ -87,10 +90,9 @@ public class TestResultShowerActivity extends BaseActivity {
             @Override
             public void onFailure(Call<Object> call, Throwable t) {
                 if(t.getMessage().equals("")){
-
+                    //todo save data on cache
                 }
             }
         });
-//        todo finish should be at the end of the function
     }
 }

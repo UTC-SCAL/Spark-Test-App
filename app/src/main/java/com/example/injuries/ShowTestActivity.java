@@ -26,10 +26,10 @@ import static com.example.injuries.utils.AndroidUtils.vibrate;
 
 public class ShowTestActivity extends MotionSensorActivity {
 
-    public static final int MAX_TESTS_NUMBER = 20;
+    public static final int MAX_TESTS_NUMBER = 2;
     public static final int THRESHOLD = 2; // in degrees
     public static final int GROUP_SHOWING_TIME_MS = 300;
-    public static final int WAITING_TIME_RANDOMIZATION_STEP = 1000;
+    public static final int WAITING_TIME_RANDOMIZATION_STEP = 500;
     public static final int MSC_PER_SEC = 1000;
     private static final int TEST_ACCURACY_SIZE = 3;
     public static final float INITIAL_POSITION_UPDATE_RATE = 1f;
@@ -53,8 +53,8 @@ public class ShowTestActivity extends MotionSensorActivity {
 
 
     private String arrow_combinations[] = {
-            "<<<<<", //left cong.
-            ">>>>>", //right cong.
+            "<<<<<", //left con.
+            ">>>>>", //right con.
             ">><>>", //left inc.
             "<<><<", //right inc.
     };

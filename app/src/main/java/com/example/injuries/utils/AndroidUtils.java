@@ -10,6 +10,7 @@ import android.os.VibrationEffect;
 import android.os.Vibrator;
 
 import com.example.injuries.R;
+import com.example.injuries.TestResultShowerActivity;
 
 public class AndroidUtils {
     private static Context context;
@@ -32,5 +33,9 @@ public class AndroidUtils {
         } else {
             v.vibrate(200);
         }
+    }
+
+    public static void showDialogue(String results_has_been_saved_permanently, Context context) {
+
     }
 }
