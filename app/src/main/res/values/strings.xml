@@ -10,7 +10,7 @@
     <string name="device_calibration">Device Calibration</string>
     <string name="title_activity_device_caliberation">DeviceCaliberation</string>
     <string name="title_activity_reporting_result">ReportingResult</string>
-    <string name="frank_test">Franker\'s Test</string>
+    <string name="frank_test">FRANKER\'s TEST</string>
     <string name="frank_test_result">Franker\'s Test Result</string>
     <string name="guidelines">Please fix the device in the neutral position until you see the first group of symbols</string>
     <string name="practice">Practice</string>
@@ -18,4 +18,5 @@
     <string name="advanced_test">Advanced Test</string>
     <string name="tester_id">Candidate ID</string>
     <string name="id_message">Please insert a 5-digits ID</string>
+    <string name="send">Send</string>
 </resources>

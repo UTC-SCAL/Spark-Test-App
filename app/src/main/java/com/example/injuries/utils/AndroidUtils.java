@@ -1,5 +1,6 @@
 package com.example.injuries.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.media.Ringtone;
@@ -8,6 +9,9 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.support.design.widget.Snackbar;
+import android.view.View;
+import android.widget.Toast;
 
 import com.example.injuries.R;
 import com.example.injuries.TestResultShowerActivity;
@@ -35,7 +39,10 @@ public class AndroidUtils {
         }
     }
 
-    public static void showDialogue(String results_has_been_saved_permanently, Context context) {
-
+    public static void showDialogue(String message, View view) {
+        Snackbar snackbar = Snackbar
+                .make(view, message, Snackbar.LENGTH_INDEFINITE);
+                snackbar.setAction("close", v -> snackbar.dismiss());
+        snackbar.show();
     }
 }

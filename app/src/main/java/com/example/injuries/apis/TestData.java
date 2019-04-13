@@ -5,12 +5,22 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
+import java.util.Random;
 
 public class TestData {
 
     @SerializedName("candidate_id")
     @Expose
     private String id;
+
+    @SerializedName("test_instance_id")
+    @Expose
+    private int testInstanceId;
+
+    @SerializedName("test_time")
+    @Expose
+    private long  testTime;
+
 
     @SerializedName("test_id")
     @Expose
@@ -21,6 +31,9 @@ public class TestData {
     private List<TestSample> testSamples;
 
 
+    public TestData(){
+        this.testTime = System.currentTimeMillis();
+    }
     public String getId() {
         return id;
     }
@@ -42,7 +55,16 @@ public class TestData {
         return test_id;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == null)
+            return false;
+        return ((TestData) obj).testInstanceId == this.testInstanceId;
+    }
+
     public void setTest_id(String test_id) {
         this.test_id = test_id;
     }
+
+
 }

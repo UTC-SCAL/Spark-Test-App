@@ -1,10 +1,13 @@
 package com.example.injuries;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 
 import com.example.injuries.databinding.ActivityMainBinding;
+import com.example.injuries.databinding.SendDataAgainBinding;
 import com.example.injuries.global.Keys;
 import com.example.injuries.pojos.RotationVector;
 
@@ -32,8 +35,16 @@ public class MainActivity extends MotionSensorActivity{
     @Override
     protected void onStart() {
         super.onStart();
+        showSendingDataDialogue();
     }
 
+    private void showSendingDataDialogue() {
+        final Dialog sendDataDialog = new Dialog(this);
+        SendDataAgainBinding binding = SendDataAgainBinding.inflate(LayoutInflater.from(this));
+        sendDataDialog.setContentView(binding.getRoot());
+        sendDataDialog.show();
+
+    }
 
 
     @Override

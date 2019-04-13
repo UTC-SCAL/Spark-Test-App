@@ -12,6 +12,10 @@ import com.example.injuries.global.Keys;
 import com.example.injuries.pojos.TestSample;
 import com.example.injuries.pojos.TestSamplesContainer;
 import com.example.injuries.utils.AndroidUtils;
+import com.example.injuries.utils.Preferences;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -41,27 +45,28 @@ public class TestResultShowerActivity extends BaseActivity {
 
     private void showTestData() {
         binding.correctedResponsesPercentageValue.setText(getTestAccuracy() + "%");
-        binding.responseTimeValue.setText((int)getAvgResTime() + " ms");
+        binding.responseTimeValue.setText((int) getAvgResTime() + " ms");
     }
 
-    private double getAvgResTime(){
+    private double getAvgResTime() {
         double res = 0;
-        for(TestSample testSample: container){
+        for (TestSample testSample : container) {
             res += testSample.getResponse_time();
         }
         return res / container.getSize();
     }
 
-    private int getTestAccuracy(){
+    private int getTestAccuracy() {
         double res = 0;
-        for(TestSample testSample: container){
-            if(testSample.isCorrect())
-                res ++;
+        for (TestSample testSample : container) {
+            if (testSample.isCorrect())
+                res++;
         }
-        if(res != 0)
+        if (res != 0)
             return (int) (100 * res / container.getSize());
         return 0;
     }
+
     private void setEvents() {
         binding.goToHome.setOnClickListener(view -> {
             startActivity(new Intent(this, MainActivity.class));
@@ -78,21 +83,29 @@ public class TestResultShowerActivity extends BaseActivity {
             @Override
             public void onResponse(Call<Object> call, Response<Object> response) {
 
-                if(response.isSuccessful()){
-                    AndroidUtils.showDialogue("Results has been saved permanently",
-                            TestResultShowerActivity.this);
-                }
-                else{
-
+                if (response.isSuccessful()) {
+                    AndroidUtils.showDialogue("Results have been saved permanently",
+                            binding.getRoot());
+                } else {
+                    saveDataLocally(testData);
                 }
             }
 
             @Override
             public void onFailure(Call<Object> call, Throwable t) {
-                if(t.getMessage().equals("")){
-                    //todo save data on cache
-                }
+                saveDataLocally(testData);
             }
         });
+    }
+
+    private void saveDataLocally(TestData testData) {
+        AndroidUtils.showDialogue("Network problem!, Data will be saved later", binding.getRoot());
+        Preferences preferences = Preferences.getInstance(this);
+        List<TestData> oldList = preferences.getSavedItem(Keys.TEST_DATA, List.class);
+        if (oldList == null)
+            oldList = new ArrayList<>();
+        if(!oldList.contains(testData))
+            oldList.add(testData);
+        preferences.saveItem(Keys.TEST_DATA, oldList, List.class);
     }
 }
