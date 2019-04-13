@@ -3,6 +3,7 @@ package com.example.injuries;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.view.View;
 
 import com.example.injuries.apis.NetworkCaller;
 import com.example.injuries.apis.TestData;
@@ -87,25 +88,35 @@ public class TestResultShowerActivity extends BaseActivity {
                     AndroidUtils.showDialogue("Results have been saved permanently",
                             binding.getRoot());
                 } else {
-                    saveDataLocally(testData);
+                    saveDataLocally(testData, binding.getRoot());
                 }
             }
 
             @Override
             public void onFailure(Call<Object> call, Throwable t) {
-                saveDataLocally(testData);
+                saveDataLocally(testData, binding.getRoot());
             }
         });
     }
 
-    private void saveDataLocally(TestData testData) {
+    private void saveDataLocally(TestData testData, View parent) {
+        List<TestData> items = new ArrayList<>();
+        items.add(testData);
         AndroidUtils.showDialogue("Network problem!, Data will be saved later", binding.getRoot());
-        Preferences preferences = Preferences.getInstance(this);
+        saveDataLocally(items, parent);
+    }
+
+    private void saveDataLocally(List<TestData> testDataList, View parent) {
+        AndroidUtils.showDialogue("Network problem!, Data will be saved later", binding.getRoot());
+        Preferences preferences = Preferences.getInstance(parent.getContext());
         List<TestData> oldList = preferences.getSavedItem(Keys.TEST_DATA, List.class);
         if (oldList == null)
             oldList = new ArrayList<>();
-        if(!oldList.contains(testData))
-            oldList.add(testData);
+        for(TestData testData: testDataList) {
+            if(!oldList.contains(testData))
+                oldList.add(testData);
+        }
         preferences.saveItem(Keys.TEST_DATA, oldList, List.class);
     }
+
 }

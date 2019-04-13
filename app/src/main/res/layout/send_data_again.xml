@@ -8,7 +8,7 @@
             android:layout_centerHorizontal="true"
             android:layout_margin="8dp"
             android:padding="8dp"
-            android:text="You have 3 unsaved tests, Do you want to save them?"
+            android:text="@string/unsaved_tests_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <Button
