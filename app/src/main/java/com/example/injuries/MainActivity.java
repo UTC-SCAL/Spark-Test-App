@@ -12,8 +12,11 @@ import com.example.injuries.databinding.ActivityMainBinding;
 import com.example.injuries.databinding.SendDataAgainBinding;
 import com.example.injuries.global.Keys;
 import com.example.injuries.pojos.RotationVector;
+import com.example.injuries.utils.AndroidUtils;
 import com.example.injuries.utils.Preferences;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
 import retrofit2.Call;
@@ -46,16 +49,19 @@ public class MainActivity extends MotionSensorActivity{
     @Override
     protected void onStart() {
         super.onStart();
-        showSendingDataDialogue();
     }
 
     private void showSendingDataDialogue() {
-        List<TestData> testData = Preferences.getInstance(this).getSavedItem(Keys.TEST_DATA, List.class);
-        if(testData == null)
+        Type listOfTestItems = new TypeToken<List<TestData>>(){}.getType();
+        List<TestData> testData = Preferences.getInstance(this).getSavedItem(Keys.TEST_DATA, listOfTestItems);
+        if(testData == null || testData.size() == 0)
             return;
         final Dialog sendDataDialog = new Dialog(this);
         SendDataAgainBinding binding = SendDataAgainBinding.inflate(LayoutInflater.from(this));
-        binding.send.setOnClickListener(v -> sendOldData(testData));
+        binding.send.setOnClickListener(v -> {
+            sendOldData(testData);
+            sendDataDialog.dismiss();
+        });
         sendDataDialog.setContentView(binding.getRoot());
         sendDataDialog.show();
 
@@ -71,15 +77,14 @@ public class MainActivity extends MotionSensorActivity{
                     if (response.isSuccessful()) {
 
                         synchronized (this){
-                            savedTestDataCount ++;
                             testDataList.remove(testData);
-                            checkIfFinished(totalTests, savedTestDataCount, testDataList);
+                            inc_and_check(testDataList);
+
                         }
                     }
                     else{
                         synchronized (this){
-                            savedTestDataCount ++;
-                            checkIfFinished(totalTests, savedTestDataCount, testDataList);
+                            inc_and_check(testDataList);
                         }
                     }
                 }
@@ -87,19 +92,28 @@ public class MainActivity extends MotionSensorActivity{
                 @Override
                 public void onFailure(Call<Object> call, Throwable t) {
                     synchronized (this){
-                        savedTestDataCount ++;
-                        checkIfFinished(totalTests, savedTestDataCount, testDataList);
-
+                        inc_and_check(testDataList);
                     }
                 }
             });
         }
     }
 
+    private void inc_and_check(List<TestData> testDataList) {
+        savedTestDataCount++;
+        checkIfFinished(totalTests, savedTestDataCount, testDataList);
+    }
+
     private void checkIfFinished(int totalTests, int savedTestDataCount, List<TestData> testDataList) {
         if(savedTestDataCount != totalTests)
             return;
-        Preferences.getInstance(this).saveItem(Keys.TEST_DATA, testDataList, List.class);
+        Type listOfTestItems = new TypeToken<List<TestData>>(){}.getType();
+        Preferences.getInstance(this).saveItem(Keys.TEST_DATA, testDataList, listOfTestItems);
+        if(!testDataList.isEmpty())
+            AndroidUtils.showDialogue("Network problem!\nData will be saved later", binding.getRoot());
+        else
+            AndroidUtils.showDialogue("All test data has been saved!", binding.getRoot());
+
     }
 
 
@@ -110,8 +124,7 @@ public class MainActivity extends MotionSensorActivity{
         binding.toolbar.setTitle(R.string.frank_test);
         initial_position = new RotationVector();
         setButtonEvents();
-
-
+        showSendingDataDialogue();
     }
 
     private void setButtonEvents() {

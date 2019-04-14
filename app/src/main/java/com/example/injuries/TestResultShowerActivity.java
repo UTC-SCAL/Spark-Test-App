@@ -14,7 +14,9 @@ import com.example.injuries.pojos.TestSample;
 import com.example.injuries.pojos.TestSamplesContainer;
 import com.example.injuries.utils.AndroidUtils;
 import com.example.injuries.utils.Preferences;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -109,14 +111,15 @@ public class TestResultShowerActivity extends BaseActivity {
     private void saveDataLocally(List<TestData> testDataList, View parent) {
         AndroidUtils.showDialogue("Network problem!, Data will be saved later", binding.getRoot());
         Preferences preferences = Preferences.getInstance(parent.getContext());
-        List<TestData> oldList = preferences.getSavedItem(Keys.TEST_DATA, List.class);
+        Type listOfTestItems = new TypeToken<List<TestData>>(){}.getType();
+        List<TestData> oldList = preferences.getSavedItem(Keys.TEST_DATA, listOfTestItems);
         if (oldList == null)
             oldList = new ArrayList<>();
         for(TestData testData: testDataList) {
             if(!oldList.contains(testData))
                 oldList.add(testData);
         }
-        preferences.saveItem(Keys.TEST_DATA, oldList, List.class);
+        preferences.saveItem(Keys.TEST_DATA, oldList, listOfTestItems);
     }
 
 }

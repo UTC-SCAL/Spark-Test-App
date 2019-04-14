@@ -64,9 +64,11 @@ public class TestData {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj == null)
-            return false;
-        return ((TestData) obj).testInstanceId == this.testInstanceId;
+        if(obj instanceof TestData) {
+            TestData testData = (TestData) obj;
+            return testData.testTime == this.testTime;
+        }
+        return false;
     }
 
     public void setTest_id(String test_id) {

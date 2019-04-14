@@ -7,6 +7,8 @@ import android.text.TextUtils;
 
 import com.google.gson.Gson;
 
+import java.lang.reflect.Type;
+
 public class Preferences {
     public static final String APP_KEY = "APP_KEY";
     private static Preferences preferences;
@@ -29,12 +31,27 @@ public class Preferences {
         preferences.sharedPreferences.edit().putString(key, serialized).apply();
     }
 
+    public <T> void saveItem(String key, T item, Type type){
+
+        Gson gson = new Gson();
+        String serialized = gson.toJson(item, type);
+        preferences.sharedPreferences.edit().putString(key, serialized).apply();
+    }
+
     public <T> T getSavedItem(String key, Class itemClass){
         Gson gson = new Gson();
         String serialized = preferences.sharedPreferences.getString(key, "");
         if(TextUtils.isEmpty(serialized))
             return null;
         return (T) gson.fromJson(serialized, itemClass);
+    }
+
+    public <T> T getSavedItem(String key, Type type){
+        Gson gson = new Gson();
+        String serialized = preferences.sharedPreferences.getString(key, "");
+        if(TextUtils.isEmpty(serialized))
+            return null;
+        return (T) gson.fromJson(serialized, type);
     }
 
     public void clearCache(){
