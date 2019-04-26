@@ -26,7 +26,7 @@ import static com.example.injuries.utils.AndroidUtils.vibrate;
 public class ShowTestActivity extends MotionSensorActivity {
 
     public static final int MAX_TESTS_NUMBER = 20;
-    public static final int THRESHOLD = 2; // in degrees
+    public static final int THRESHOLD = 2;
     public static final int GROUP_SHOWING_TIME_MS = 300;
     public static final int WAITING_TIME_RANDOMIZATION_STEP = 500;
     public static final int MSC_PER_SEC = 1000;
@@ -39,7 +39,6 @@ public class ShowTestActivity extends MotionSensorActivity {
     RotationVector initial_position;
     RotationVector updated_initial_position;
     private int remaining_tests = MAX_TESTS_NUMBER;
-    private boolean within_test_period = false;
     private long sample_starting_time = 0;
     private int current_sample_number;
     private TestSamplesContainer testSamplesContainer;
@@ -73,6 +72,7 @@ public class ShowTestActivity extends MotionSensorActivity {
     private String candidate_id;
     private Handler response_limit_handler;
     private Runnable maxTimeRunnable;
+    private boolean withinTest = false;
 
 
     private void initialize_samples_order() {
@@ -91,8 +91,8 @@ public class ShowTestActivity extends MotionSensorActivity {
         candidate_id = getIntent().getExtras().getString(Keys.CANDIDATE_ID);
         updated_initial_position = new RotationVector(initial_position);
         initialize_samples_order();
-        setTimerSettings();
         setListeners();
+        setTimerSettings();
     }
 
     @Override
@@ -109,7 +109,6 @@ public class ShowTestActivity extends MotionSensorActivity {
         binding.performTestAgain.setOnClickListener(view -> {
             binding.performTestAgain.setVisibility(View.GONE);
             remaining_tests = MAX_TESTS_NUMBER;
-            show_test_sample();
         });
     }
 
@@ -130,31 +129,20 @@ public class ShowTestActivity extends MotionSensorActivity {
     }
 
     private void show_test_sample() {
+        withinTest = true;
         binding.testArea.setVisibility(View.VISIBLE);
         int sample_index = remaining_tests - 1;
         current_sample_number = indices.get(sample_index);
         indices.remove(sample_index);
-
-        within_test_period = true;
         sample_starting_time = System.currentTimeMillis();
         binding.testArea.setText(arrow_combinations[current_sample_number]);
         initial_position = new RotationVector(updated_initial_position);
         Log.i("init_pos", "" + initial_position.getX());
-        new CountDownTimer(GROUP_SHOWING_TIME_MS, 0) {
 
-            @Override
-            public void onTick(long millisUntilFinished) {
-            }
-
-            @Override
-            public void onFinish() {
-                binding.testArea.setText("");
-                response_limit_handler = new Handler();
-                maxTimeRunnable = maxTimeRunnable();
-                response_limit_handler.postDelayed(maxTimeRunnable, 2 * ONE_SEC);
-
-            }
-        }.start();
+        response_limit_handler = new Handler();
+        maxTimeRunnable = maxTimeRunnable();
+        response_limit_handler.postDelayed(maxTimeRunnable, 2 * ONE_SEC + GROUP_SHOWING_TIME_MS);
+        new Handler().postDelayed(this::emptyTestArea, GROUP_SHOWING_TIME_MS);
     }
 
     private Runnable maxTimeRunnable() {
@@ -167,17 +155,20 @@ public class ShowTestActivity extends MotionSensorActivity {
 
 
     private void applyUserResponse() {
+        withinTest = false;
+        emptyTestArea();
         remaining_tests--;
-        new Handler().postDelayed(() -> {
-            if (remaining_tests != 0) {
-                show_test_sample();
-            } else
-                showResult();
-        }, get_random_waiting_time());
+        if (remaining_tests != 0)
+            new Handler().postDelayed(this::show_test_sample, get_random_waiting_time());
+        else
+            showResult();
+    }
+
+    private void emptyTestArea() {
+        binding.testArea.setText("");
     }
 
     private void showResult() {
-
         Intent resultIntent = new Intent(ShowTestActivity.this, ResultShowerActivity.class);
         resultIntent.putExtra(Keys.SAMPLES_CONTAINER, testSamplesContainer);
         resultIntent.putExtra(Keys.CANDIDATE_ID, candidate_id);
@@ -188,7 +179,7 @@ public class ShowTestActivity extends MotionSensorActivity {
 
 
     private long get_random_waiting_time() {
-        return (long) (WAITING_TIME_RANDOMIZATION_STEP + Math.random() * ONE_SEC );
+        return (long) (WAITING_TIME_RANDOMIZATION_STEP  * Math.random() + ONE_SEC );
     }
 
 
@@ -197,11 +188,10 @@ public class ShowTestActivity extends MotionSensorActivity {
         super.onRotationChanged(x, y, z, angle);
         updated_initial_position.update(INITIAL_POSITION_UPDATE_RATE, x, y, z, angle);
         last_rotation_vectors.add(new RotationVector(x, y, z, angle));
+        if(!withinTest)
+            return;
         double corrected_x_diff = get_corrected_diff(last_rotation_vectors);
 
-        if (!within_test_period)
-            return;
-        //within test period
         if (Math.abs(corrected_x_diff) > THRESHOLD) {
             playSound(this);
             Log.i("corrected_x_diff", " = " + corrected_x_diff);
@@ -209,7 +199,6 @@ public class ShowTestActivity extends MotionSensorActivity {
                     !isRight[current_sample_number] && (corrected_x_diff < 0);
             Log.i("rotation_values", "res = " + testResult + ", diff= " + corrected_x_diff);
             setTestSampleValues(testResult);
-            within_test_period = false;
             last_rotation_vectors.clear();
             if(response_limit_handler != null && maxTimeRunnable != null)
                 response_limit_handler.removeCallbacks(maxTimeRunnable);
