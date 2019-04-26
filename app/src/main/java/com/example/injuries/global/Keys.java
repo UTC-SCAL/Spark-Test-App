@@ -6,4 +6,5 @@ public class Keys {
     public static final String CANDIDATE_ID = "user_id";
     public static final String TEST_ID = "test_id";
     public static final String TEST_DATA = "test_data";
+    public static final String IS_PRACTICE = "is_practice";
 }

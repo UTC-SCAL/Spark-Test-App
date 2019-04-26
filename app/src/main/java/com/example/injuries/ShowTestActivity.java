@@ -35,7 +35,7 @@ public class ShowTestActivity extends MotionSensorActivity {
     public static final String FIRST_TEST = "1";
     private List<Integer> indices;
     public static final int STARTING_WAITING_TIME = 6000;
-    private static final double ONE_SEC = 1000;
+    private static final long ONE_SEC = 1000;
     RotationVector initial_position;
     RotationVector updated_initial_position;
     private int remaining_tests = MAX_TESTS_NUMBER;
@@ -44,8 +44,6 @@ public class ShowTestActivity extends MotionSensorActivity {
     private int current_sample_number;
     private TestSamplesContainer testSamplesContainer;
     VectorsList last_rotation_vectors = new VectorsList(TEST_ACCURACY_SIZE);
-
-    private boolean in_critical_period = false;
 
 
     ActivityShowTestBinding binding;
@@ -73,6 +71,8 @@ public class ShowTestActivity extends MotionSensorActivity {
       false
     };
     private String candidate_id;
+    private Handler response_limit_handler;
+    private Runnable maxTimeRunnable;
 
 
     private void initialize_samples_order() {
@@ -140,7 +140,7 @@ public class ShowTestActivity extends MotionSensorActivity {
         binding.testArea.setText(arrow_combinations[current_sample_number]);
         initial_position = new RotationVector(updated_initial_position);
         Log.i("init_pos", "" + initial_position.getX());
-        new CountDownTimer(GROUP_SHOWING_TIME_MS, 100) {
+        new CountDownTimer(GROUP_SHOWING_TIME_MS, 0) {
 
             @Override
             public void onTick(long millisUntilFinished) {
@@ -148,30 +148,32 @@ public class ShowTestActivity extends MotionSensorActivity {
 
             @Override
             public void onFinish() {
-                long waiting_time = get_random_waiting_time();
                 binding.testArea.setText("");
-                new Handler().postDelayed(() -> {
-                    if(within_test_period)
-                        askUserResponse();
-                     else
-                        applyUserResponse();
-                }, waiting_time);
+                response_limit_handler = new Handler();
+                maxTimeRunnable = maxTimeRunnable();
+                response_limit_handler.postDelayed(maxTimeRunnable, 2 * ONE_SEC);
 
             }
         }.start();
     }
 
-    private void askUserResponse() {
-        vibrate(ShowTestActivity.this);
-        in_critical_period = true;
+    private Runnable maxTimeRunnable() {
+        return () -> {
+            vibrate(this);
+            setTestSampleValues(false);
+            applyUserResponse();
+        };
     }
+
 
     private void applyUserResponse() {
         remaining_tests--;
-        if (remaining_tests != 0) {
-            show_test_sample();
-        } else
-            showResult();
+        new Handler().postDelayed(() -> {
+            if (remaining_tests != 0) {
+                show_test_sample();
+            } else
+                showResult();
+        }, get_random_waiting_time());
     }
 
     private void showResult() {
@@ -199,7 +201,7 @@ public class ShowTestActivity extends MotionSensorActivity {
 
         if (!within_test_period)
             return;
-        //then within test period is true
+        //within test period
         if (Math.abs(corrected_x_diff) > THRESHOLD) {
             playSound(this);
             Log.i("corrected_x_diff", " = " + corrected_x_diff);
@@ -209,11 +211,9 @@ public class ShowTestActivity extends MotionSensorActivity {
             setTestSampleValues(testResult);
             within_test_period = false;
             last_rotation_vectors.clear();
-            if(in_critical_period){
-                in_critical_period = false;
-                applyUserResponse();
-            }
-
+            if(response_limit_handler != null && maxTimeRunnable != null)
+                response_limit_handler.removeCallbacks(maxTimeRunnable);
+            applyUserResponse();
         }
     }
 
@@ -233,8 +233,7 @@ public class ShowTestActivity extends MotionSensorActivity {
             return 0;
         for (RotationVector vector: last_rotation_vectors)
             N_differences.add(vector.getX() - initial_position.getX());
-        double average = calculate_average(N_differences);
-        return average;
+        return calculate_average(N_differences);
     }
 
     private double calculate_average(List<Double> differences) {
