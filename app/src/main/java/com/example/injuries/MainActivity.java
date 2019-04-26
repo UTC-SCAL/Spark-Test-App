@@ -139,7 +139,7 @@ public class MainActivity extends MotionSensorActivity{
             binding.candidateId.setError(getString(R.string.id_message));
             return;
         }
-        Intent show_test_intent = new Intent(this, ShowTestActivity.class);
+        Intent show_test_intent = new Intent(this, TestActivity.class);
         show_test_intent.putExtra(Keys.INITIAL_POSITIOIN, initial_position);
         show_test_intent.putExtra(Keys.CANDIDATE_ID, binding.candidateId.getText().toString());
         show_test_intent.putExtra(Keys.IS_PRACTICE, isPractice);

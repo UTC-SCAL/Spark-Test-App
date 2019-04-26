@@ -24,7 +24,7 @@
             android:screenOrientation="landscape"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ShowTestActivity"
+            android:name=".TestActivity"
             android:label="@string/title_activity_show_test"
             android:screenOrientation="landscape"
             android:theme="@style/AppTheme.NoActionBar" />

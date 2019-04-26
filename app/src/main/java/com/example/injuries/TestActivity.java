@@ -23,7 +23,7 @@ import java.util.List;
 import static com.example.injuries.utils.AndroidUtils.playSound;
 import static com.example.injuries.utils.AndroidUtils.vibrate;
 
-public class ShowTestActivity extends MotionSensorActivity {
+public class TestActivity extends MotionSensorActivity {
 
     public static int maxTestsNumber = 20;
     public static final int THRESHOLD = 2;
@@ -175,7 +175,7 @@ public class ShowTestActivity extends MotionSensorActivity {
     }
 
     private void showResult() {
-        Intent resultIntent = new Intent(ShowTestActivity.this, ResultShowerActivity.class);
+        Intent resultIntent = new Intent(TestActivity.this, ResultShowerActivity.class);
         resultIntent.putExtra(Keys.SAMPLES_CONTAINER, testSamplesContainer);
         resultIntent.putExtra(Keys.CANDIDATE_ID, candidate_id);
         resultIntent.putExtra(Keys.TEST_ID, FIRST_TEST);
@@ -238,4 +238,5 @@ public class ShowTestActivity extends MotionSensorActivity {
             sum += value;
         return sum / differences.size();
     }
+
 }
