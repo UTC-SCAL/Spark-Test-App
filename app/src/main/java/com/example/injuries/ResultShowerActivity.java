@@ -29,6 +29,8 @@ public class ResultShowerActivity extends BaseActivity {
     ActivityReportingResultBinding binding;
     TestSamplesContainer container;
 
+    boolean isPractice;
+
     String testId, candidateId;
 
     @Override
@@ -37,11 +39,13 @@ public class ResultShowerActivity extends BaseActivity {
         container = getIntent().getExtras().getParcelable(Keys.SAMPLES_CONTAINER);
         testId = getIntent().getExtras().getString(Keys.TEST_ID);
         candidateId = getIntent().getExtras().getString(Keys.CANDIDATE_ID);
+        isPractice = getIntent().getExtras().getBoolean(Keys.IS_PRACTICE);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_reporting_result);
         binding.toolbar.setTitle(R.string.frank_test_result);
         showTestData();
         setEvents();
-        sendResult();
+        if(!isPractice)
+            sendResult();
 
     }
 
