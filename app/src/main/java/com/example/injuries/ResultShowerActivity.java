@@ -24,7 +24,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class TestResultShowerActivity extends BaseActivity {
+public class ResultShowerActivity extends BaseActivity {
 
     ActivityReportingResultBinding binding;
     TestSamplesContainer container;
@@ -34,7 +34,6 @@ public class TestResultShowerActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //TODO check if it's null
         container = getIntent().getExtras().getParcelable(Keys.SAMPLES_CONTAINER);
         testId = getIntent().getExtras().getString(Keys.TEST_ID);
         candidateId = getIntent().getExtras().getString(Keys.CANDIDATE_ID);

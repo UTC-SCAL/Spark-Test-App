@@ -13,7 +13,6 @@ import android.view.WindowManager;
 import com.example.injuries.databinding.ActivityShowTestBinding;
 import com.example.injuries.global.Keys;
 import com.example.injuries.pojos.RotationVector;
-import com.example.injuries.pojos.TestSample;
 import com.example.injuries.pojos.TestSamplesContainer;
 import com.example.injuries.utils.VectorsList;
 
@@ -177,7 +176,7 @@ public class ShowTestActivity extends MotionSensorActivity {
 
     private void showResult() {
 
-        Intent resultIntent = new Intent(ShowTestActivity.this, TestResultShowerActivity.class);
+        Intent resultIntent = new Intent(ShowTestActivity.this, ResultShowerActivity.class);
         resultIntent.putExtra(Keys.SAMPLES_CONTAINER, testSamplesContainer);
         resultIntent.putExtra(Keys.CANDIDATE_ID, candidate_id);
         resultIntent.putExtra(Keys.TEST_ID, FIRST_TEST);

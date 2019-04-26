@@ -15,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".TestResultShowerActivity"
+            android:name=".ResultShowerActivity"
             android:label="@string/title_activity_reporting_result"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity

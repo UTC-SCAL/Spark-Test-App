@@ -6,9 +6,9 @@ import android.support.v7.widget.RecyclerView;
 import com.example.injuries.databinding.SingleScoreFileBinding;
 import com.example.injuries.pojos.TestSample;
 
-public class TestResultViewHolder extends RecyclerView.ViewHolder {
+public class ResultViewHolder extends RecyclerView.ViewHolder {
     SingleScoreFileBinding binding;
-    public TestResultViewHolder(SingleScoreFileBinding binding) {
+    public ResultViewHolder(SingleScoreFileBinding binding) {
         super(binding.getRoot());
         this.binding = binding;
     }

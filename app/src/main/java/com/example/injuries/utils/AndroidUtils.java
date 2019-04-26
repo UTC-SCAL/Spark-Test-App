@@ -1,20 +1,14 @@
 package com.example.injuries.utils;
 
-import android.app.Activity;
 import android.content.Context;
 import android.media.MediaPlayer;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.support.design.widget.Snackbar;
 import android.view.View;
-import android.widget.Toast;
 
 import com.example.injuries.R;
-import com.example.injuries.TestResultShowerActivity;
 
 public class AndroidUtils {
     private static Context context;
