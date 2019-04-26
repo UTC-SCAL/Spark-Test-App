@@ -31,6 +31,19 @@
             android:textColor="@android:color/white"
             android:textSize="20sp"
             android:textStyle="bold" />
+
+        <Button
+            android:layout_below="@id/start_test"
+            android:id="@+id/practice_test"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_margin="8dp"
+            android:background="@color/colorPrimary"
+            android:text="@string/practice"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
         <EditText
             android:maxLength="5"
             android:id="@+id/candidate_id"
