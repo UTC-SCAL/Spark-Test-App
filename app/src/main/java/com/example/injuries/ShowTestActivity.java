@@ -25,7 +25,7 @@ import static com.example.injuries.utils.AndroidUtils.vibrate;
 
 public class ShowTestActivity extends MotionSensorActivity {
 
-    public static final int MAX_TESTS_NUMBER = 20;
+    public static int maxTestsNumber = 20;
     public static final int THRESHOLD = 2;
     public static final int GROUP_SHOWING_TIME_MS = 300;
     public static final int WAITING_TIME_RANDOMIZATION_STEP = 500;
@@ -38,7 +38,7 @@ public class ShowTestActivity extends MotionSensorActivity {
     private static final long ONE_SEC = 1000;
     RotationVector initial_position;
     RotationVector updated_initial_position;
-    private int remaining_tests = MAX_TESTS_NUMBER;
+    private int remaining_tests;
     private long sample_starting_time = 0;
     private int current_sample_number;
     private TestSamplesContainer testSamplesContainer;
@@ -73,11 +73,12 @@ public class ShowTestActivity extends MotionSensorActivity {
     private Handler response_limit_handler;
     private Runnable maxTimeRunnable;
     private boolean withinTest = false;
+    private boolean isPractice;
 
 
     private void initialize_samples_order() {
         indices = new ArrayList<>();
-        for (int i = 0; i < MAX_TESTS_NUMBER; i++)
+        for (int i = 0; i < maxTestsNumber; i++)
             indices.add(i % arrow_combinations.length);
         Collections.shuffle(indices);
     }
@@ -86,10 +87,15 @@ public class ShowTestActivity extends MotionSensorActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        testSamplesContainer = new TestSamplesContainer(MAX_TESTS_NUMBER);
+        testSamplesContainer = new TestSamplesContainer(maxTestsNumber);
         initial_position = getIntent().getExtras().getParcelable(Keys.INITIAL_POSITIOIN);
         candidate_id = getIntent().getExtras().getString(Keys.CANDIDATE_ID);
+        isPractice = getIntent().getExtras().getBoolean(Keys.IS_PRACTICE);
         updated_initial_position = new RotationVector(initial_position);
+        if(isPractice) {
+            maxTestsNumber = 10;
+        }
+        remaining_tests = maxTestsNumber;
         initialize_samples_order();
         setListeners();
         setTimerSettings();
@@ -108,7 +114,7 @@ public class ShowTestActivity extends MotionSensorActivity {
     private void setListeners() {
         binding.performTestAgain.setOnClickListener(view -> {
             binding.performTestAgain.setVisibility(View.GONE);
-            remaining_tests = MAX_TESTS_NUMBER;
+            remaining_tests = maxTestsNumber;
         });
     }
 
@@ -173,6 +179,7 @@ public class ShowTestActivity extends MotionSensorActivity {
         resultIntent.putExtra(Keys.SAMPLES_CONTAINER, testSamplesContainer);
         resultIntent.putExtra(Keys.CANDIDATE_ID, candidate_id);
         resultIntent.putExtra(Keys.TEST_ID, FIRST_TEST);
+        resultIntent.putExtra(Keys.IS_PRACTICE, isPractice);
         startActivity(resultIntent);
     }
 
