@@ -88,16 +88,15 @@ public class TestActivity extends MotionSensorActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        testSamplesContainer = new TestSamplesContainer(maxTestsNumber);
         initial_position = getIntent().getExtras().getParcelable(Keys.INITIAL_POSITIOIN);
         candidate_id = getIntent().getExtras().getString(Keys.CANDIDATE_ID);
         isPractice = getIntent().getExtras().getBoolean(Keys.IS_PRACTICE);
         updated_initial_position = new RotationVector(initial_position);
-        if(isPractice) {
+        if(isPractice)
             maxTestsNumber = 10;
-        }
         else
             maxTestsNumber = 20;
+        testSamplesContainer = new TestSamplesContainer(maxTestsNumber);
         remaining_tests = maxTestsNumber;
         initialize_samples_order();
         setListeners();
