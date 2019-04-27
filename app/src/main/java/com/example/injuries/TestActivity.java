@@ -28,7 +28,7 @@ public class TestActivity extends MotionSensorActivity {
     public static int maxTestsNumber = 20;
     public static final int THRESHOLD = 2;
     public static final int GROUP_SHOWING_TIME_MS = 300;
-    public static final int WAITING_TIME_RANDOMIZATION_STEP = 500;
+    public static final int WAITING_TIME_RANDOMIZATION_STEP = 1000;
     public static final int MSC_PER_SEC = 1000;
     private static final int TEST_ACCURACY_SIZE = 3;
     public static final float INITIAL_POSITION_UPDATE_RATE = 1f;
@@ -74,6 +74,7 @@ public class TestActivity extends MotionSensorActivity {
     private Runnable maxTimeRunnable;
     private boolean withinTest = false;
     private boolean isPractice;
+    private boolean testDisabled = false;
 
 
     private void initialize_samples_order() {
@@ -136,7 +137,17 @@ public class TestActivity extends MotionSensorActivity {
 
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        killHandler();
+        testDisabled = true;
+        finish();
+    }
+
     private void show_test_sample() {
+        if(testDisabled)
+            return;
         withinTest = true;
         binding.testArea.setVisibility(View.VISIBLE);
         int sample_index = remaining_tests - 1;
@@ -149,7 +160,9 @@ public class TestActivity extends MotionSensorActivity {
 
         response_limit_handler = new Handler();
         maxTimeRunnable = maxTimeRunnable();
+        //run the vibration after 2 seconds from hiding the group
         response_limit_handler.postDelayed(maxTimeRunnable, 2 * ONE_SEC + GROUP_SHOWING_TIME_MS);
+        //hide the group after GROUP_SHOWING_TIME_MS
         new Handler().postDelayed(this::emptyTestArea, GROUP_SHOWING_TIME_MS);
     }
 
@@ -188,7 +201,7 @@ public class TestActivity extends MotionSensorActivity {
 
 
     private long get_random_waiting_time() {
-        return (long) (WAITING_TIME_RANDOMIZATION_STEP  * Math.random() + ONE_SEC );
+        return (long) (WAITING_TIME_RANDOMIZATION_STEP  * Math.random() + 500 );
     }
 
 
@@ -243,12 +256,5 @@ public class TestActivity extends MotionSensorActivity {
         for (double value : differences)
             sum += value;
         return sum / differences.size();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        killHandler();
-        maxTestsNumber = 0;
     }
 }
