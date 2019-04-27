@@ -95,6 +95,8 @@ public class TestActivity extends MotionSensorActivity {
         if(isPractice) {
             maxTestsNumber = 10;
         }
+        else
+            maxTestsNumber = 20;
         remaining_tests = maxTestsNumber;
         initialize_samples_order();
         setListeners();
@@ -207,10 +209,14 @@ public class TestActivity extends MotionSensorActivity {
             Log.i("rotation_values", "res = " + testResult + ", diff= " + corrected_x_diff);
             setTestSampleValues(testResult);
             last_rotation_vectors.clear();
-            if(response_limit_handler != null && maxTimeRunnable != null)
-                response_limit_handler.removeCallbacks(maxTimeRunnable);
+            killHandler();
             applyUserResponse();
         }
+    }
+
+    private void killHandler() {
+        if(response_limit_handler != null && maxTimeRunnable != null)
+            response_limit_handler.removeCallbacks(maxTimeRunnable);
     }
 
     private void setTestSampleValues(boolean testResult) {
@@ -239,4 +245,10 @@ public class TestActivity extends MotionSensorActivity {
         return sum / differences.size();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        killHandler();
+        maxTestsNumber = 0;
+    }
 }
