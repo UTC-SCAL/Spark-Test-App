@@ -17,8 +17,8 @@ android {
         applicationId "com.example.injuries"
         minSdkVersion 15
         targetSdkVersion 28
-        versionCode 3
-        versionName "0.4"
+        versionCode 4
+        versionName "0.6ista"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
