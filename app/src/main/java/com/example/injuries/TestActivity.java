@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.example.injuries.databinding.ActivityShowTestBinding;
 import com.example.injuries.global.Keys;
@@ -168,8 +169,11 @@ public class TestActivity extends MotionSensorActivity {
     private Runnable maxTimeRunnable() {
         return () -> {
             vibrate(this);
-            setTestSampleValues(false);
-            applyUserResponse();
+            Toast toast = Toast.makeText(this, "No response for 2 seconds, aborting the test", Toast.LENGTH_LONG);
+            toast.show();
+            Intent mainActivity = new Intent(TestActivity.this, MainActivity.class);
+            startActivity(mainActivity);
+            finish();
         };
     }
 
